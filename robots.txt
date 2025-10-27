@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mustang-driving.ru/sitemap.xml
+
+# Disallow crawling of unnecessary files
+Disallow: /js/
+Disallow: /styles/
+Disallow: /*.json$
+Disallow: /*.log$
+
+# Host
+Host: https://mustang-driving.ru
