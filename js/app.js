@@ -31,19 +31,24 @@ function initAnimations() {
         });
         // Safety: if for какой-то причине класс aos-animate не присвоился
         // принудительно делаем элементы видимыми через небольшой таймаут
-        setTimeout(() => {
-            document.querySelectorAll('[data-aos]').forEach(el => {
-                if (!el.classList.contains('aos-animate')) {
-                    el.classList.add('aos-animate');
-                }
-            });
-        }, 800);
+        
     } else {
         console.warn('AOS not loaded — applying visibility fallback');
         // Fallback: показать элементы без AOS
-        document.querySelectorAll('[data-aos]').forEach(el => {
-            el.classList.add('aos-animate');
-        });
+        const els = document.querySelectorAll('[data-aos]');
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('aos-animate');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+            els.forEach(el => io.observe(el));
+        } else {
+            els.forEach(el => el.classList.add('aos-animate'));
+        }
     }
 }
 
@@ -99,6 +104,34 @@ function initFAQ() {
             }
         });
     });
+}
+
+// Ensure reveal animations trigger only when elements enter viewport
+function enforceOnScrollAnimations() {
+    const elements = Array.from(document.querySelectorAll('[data-aos]'));
+    if (!elements.length) return;
+
+    const inView = (el) => {
+        const r = el.getBoundingClientRect();
+        return r.top < window.innerHeight * 0.85 && r.bottom > 0;
+    };
+
+    // Remove accidental pre-applied classes for offscreen elements
+    elements.forEach(el => {
+        if (!inView(el)) el.classList.remove('aos-animate');
+    });
+
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('aos-animate');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+        elements.forEach(el => io.observe(el));
+    }
 }
 
 // Modal Form
@@ -489,6 +522,34 @@ function initBackToTop() {
     });
 }
 
+// Keep the start date on one line and shrink if needed
+function fitStartBannerDate() {
+    const el = document.querySelector('.start-banner__date');
+    if (!el) return;
+    const computed = window.getComputedStyle(el);
+    const maxSize = parseFloat(computed.fontSize) || 24;
+    const minSize = 12;
+    el.style.whiteSpace = 'nowrap';
+    el.style.fontSize = maxSize + 'px';
+    let current = maxSize;
+    let guard = 0;
+    while (el.scrollWidth > el.clientWidth && current > minSize && guard < 40) {
+        current -= 1;
+        el.style.fontSize = current + 'px';
+        guard++;
+    }
+}
+
+// Run fit on load and on resize
+document.addEventListener('DOMContentLoaded', () => {
+    fitStartBannerDate();
+});
+
+window.addEventListener('resize', (() => {
+    let t;
+    return () => { clearTimeout(t); t = setTimeout(fitStartBannerDate, 200); };
+})());
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     applyBrandPalette();
@@ -501,6 +562,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initStats();
     initYandexMap();
     initBackToTop();
+    // Make sure AOS-style reveals happen on entering viewport, not immediately
+    setTimeout(enforceOnScrollAnimations, 300);
     loadStartDate(); // Загружаем актуальную дату старта
 
     // Clear any inline header styles
@@ -613,9 +676,12 @@ async function loadStartDate() {
         if (data.success && data.date) {
             // Обновляем дату на странице
             const dateElement = document.querySelector('.start-banner__date');
-            if (dateElement) {
-                dateElement.textContent = data.date;
-            }
+                if (dateElement) {
+                	dateElement.textContent = data.date;
+                    if (typeof fitStartBannerDate === 'function') {
+                        fitStartBannerDate();
+                    }
+                }
         }
     } catch (error) {
         console.error('Ошибка загрузки даты старта:', error);

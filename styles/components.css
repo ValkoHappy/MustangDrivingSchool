@@ -172,6 +172,17 @@
     font-size: 0.75rem;
 }
 
+/* Tweak header layout at <=1300px */
+@media (max-width: 1300px) {
+    .header { height: 76px; }
+    .header__inner { height: 76px; padding: 0.5rem 0; }
+    .logo__image { height: 56px; }
+    .nav { gap: 1.25rem; }
+    .nav__link { font-size: var(--fz-sm); }
+    .header__actions { gap: 1rem; }
+    .header__address { max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -468,6 +479,7 @@
     line-height: 1;
     color: var(--primary);
     margin-bottom: 0.25rem;
+    white-space: nowrap; /* keep date on one line */
 }
 
 .start-banner__title {
@@ -1321,6 +1333,14 @@
     font-size: 2rem;
 }
 
+/* Ensure inline SVG icons scale and inherit brand color */
+.process__icon svg {
+    width: 42px;
+    height: 42px;
+    display: block;
+    fill: currentColor;
+}
+
 .process__title {
     font-family: var(--ff-head);
     font-size: var(--fz-xl);
@@ -2092,7 +2112,7 @@
    ============================================================================ */
 
 /* Responsive — Header/Nav */
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .header { height: 60px; }
     .header__inner { height: 60px; padding: 0.25rem 0; }
     .logo__image { height: 50px; }
