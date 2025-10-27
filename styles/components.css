@@ -202,7 +202,7 @@
 
 /* Custom AOS animations */
 /* Apply initial hidden state only when AOS initializes the element */
-.aos-init[data-aos="custom-car-in"] {
+[data-aos="custom-car-in"]:not(.aos-animate) {
     /* Off-screen to the right so it arrives from outside viewport */
     opacity: 0;
     transform: translate3d(120vw, -18px, 0) scale(0.2) rotate(-3deg);
@@ -211,7 +211,7 @@
     transition: none;
 }
 
-.aos-init[data-aos="custom-car-in"].aos-animate {
+[data-aos="custom-car-in"].aos-animate {
     /* Slightly longer to show the arc */
     animation: carEnter 2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -2130,6 +2130,13 @@
     border-color: #0077FF;
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
+}
+/* Variant for primary-colored CTA (start date) */
+.cta-vk__card.is-primary {
+    background: linear-gradient(135deg, rgba(2, 187, 208, 0.06) 0%, rgba(0, 151, 167, 0.06) 100%);
+}
+.cta-vk__card.is-primary .cta-vk__icon {
+    background: var(--primary);
 }
 
 .cta-vk__content {

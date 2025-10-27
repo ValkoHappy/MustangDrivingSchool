@@ -29,6 +29,8 @@ function initAnimations() {
             disable: false, // always enable; we manage reduction via shorter duration
             startEvent: 'DOMContentLoaded'
         });
+        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, 400);
+
         // Safety: if for какой-то причине класс aos-animate не присвоился
         // принудительно делаем элементы видимыми через небольшой таймаут
         
@@ -116,21 +118,24 @@ function enforceOnScrollAnimations() {
         return r.top < window.innerHeight * 0.85 && r.bottom > 0;
     };
 
-    // Remove accidental pre-applied classes for offscreen elements
-    elements.forEach(el => {
-        if (!inView(el)) el.classList.remove('aos-animate');
-    });
+    // Применяем анимацию к элементам, которые уже в зоне видимости
+    elements.forEach(el => { if (inView(el)) { el.classList.add('aos-animate'); } });
 
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
-                if (e.isIntersecting) {
+                if (e.isIntersecting && !e.target.classList.contains('aos-animate')) {
                     e.target.classList.add('aos-animate');
                     io.unobserve(e.target);
                 }
             });
         }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-        elements.forEach(el => io.observe(el));
+        elements.forEach(el => {
+            // Наблюдаем только за элементами, которые еще не анимированы
+            if (!el.classList.contains('aos-animate')) {
+                io.observe(el);
+            }
+        });
     }
 }
 
@@ -562,8 +567,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initStats();
     initYandexMap();
     initBackToTop();
-    // Make sure AOS-style reveals happen on entering viewport, not immediately
-    setTimeout(enforceOnScrollAnimations, 300);
+    // Use fallback only if AOS is missing
+    if (typeof AOS === "undefined") { setTimeout(enforceOnScrollAnimations, 300); }
     loadStartDate(); // Загружаем актуальную дату старта
 
     // Clear any inline header styles
@@ -674,15 +679,12 @@ async function loadStartDate() {
         const data = await response.json();
 
         if (data.success && data.date) {
-            // Обновляем дату на странице
-            const dateElement = document.querySelector('.start-banner__date');
-                if (dateElement) {
-                	dateElement.textContent = data.date;
-                    if (typeof fitStartBannerDate === 'function') {
-                        fitStartBannerDate();
-                    }
-                }
-        }
+            const nodes = document.querySelectorAll('.start-banner__date, .start-date-inline');
+            nodes.forEach(el => { el.textContent = data.date; });
+            if (typeof fitStartBannerDate === 'function') {
+                fitStartBannerDate();
+            }
+    }
     } catch (error) {
         console.error('Ошибка загрузки даты старта:', error);
         // Оставляем дату по умолчанию из HTML
