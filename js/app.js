@@ -607,7 +607,7 @@ function initStats() {
 // Load Start Date from Netlify Function
 async function loadStartDate() {
     try {
-        const response = await fetch('/.netlify/functions/get-start-date');
+        const response = await fetch('/.netlify/functions/get-start-date?t=' + Date.now());
         const data = await response.json();
 
         if (data.success && data.date) {

@@ -1861,9 +1861,6 @@
     line-height: 1.5;
 }
 
-.modal__form .form__group {
-    margin-bottom: 1.5rem;
-}
 
 .modal__form .form__label {
     display: block;
@@ -3069,10 +3066,6 @@
     .modal__form .form__input {
         padding: 0.75rem;
         font-size: var(--fz-sm);
-    }
-
-    .modal__form .form__group {
-        margin-bottom: 1.25rem;
     }
 }
 
