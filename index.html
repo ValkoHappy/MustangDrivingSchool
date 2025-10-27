@@ -89,10 +89,16 @@
           </nav>
 
           <div class="header__actions">
-            <a href="tel:+79991234567" class="phone">
-              <i class="fas fa-phone"></i>
-              <span>+7 (999) 123-45-67</span>
-            </a>
+            <div class="header__contact">
+              <a href="tel:+79539396666" class="phone">
+                <i class="fas fa-phone"></i>
+                <span>8-953-939-66-66</span>
+              </a>
+              <div class="header__address">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>пр. Троицкий, д. 67, оф. 413</span>
+              </div>
+            </div>
             <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
               <span></span>
               <span></span>
@@ -130,7 +136,7 @@
             </p>
 
             <div class="hero__actions">
-              <a href="" class="btn btn--primary btn--large">
+              <a href="#" class="btn btn--primary btn--large" data-modal-open>
                 Записаться на обучение
               </a>
               <a href="#about" class="btn btn--secondary btn--large">
@@ -153,7 +159,7 @@
                   <div class="start-banner__title">Старт обучения</div>
                   <div class="start-banner__date">1 ноября</div>
                 </div>
-                <a href="" class="btn btn--primary btn--small"
+                <a href="#" class="btn btn--primary btn--small" data-modal-open
                   >Записаться сейчас</a
                 >
               </div>
@@ -509,7 +515,7 @@
               </li>
             </ul>
             <div class="pricing-card__action">
-              <a href="" class="btn btn--primary btn--block"
+              <a href="#" class="btn btn--primary btn--block" data-modal-open
                 >Записаться на теорию</a
               >
             </div>
@@ -540,7 +546,7 @@
               <li><i class="fas fa-check"></i> Гибкий график занятий</li>
             </ul>
             <div class="pricing-card__action">
-              <a href="" class="btn btn--primary btn--block"
+              <a href="#" class="btn btn--primary btn--block" data-modal-open
                 >Записаться на вождение</a
               >
             </div>
@@ -920,7 +926,7 @@
                 </div>
                 <div class="contact-item__content">
                   <h3>Адрес</h3>
-                  <p>г. Архангельск, ул. Примерная, д. 15</p>
+                  <p>163000 г. Архангельск, пр. Троицкий, д. 67, оф. 413, ТЦ «Пирамида»</p>
                 </div>
               </div>
 
@@ -930,7 +936,7 @@
                 </div>
                 <div class="contact-item__content">
                   <h3>Телефон</h3>
-                  <p><a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+                  <p><a href="tel:+79539396666">8-953-939-66-66</a></p>
                 </div>
               </div>
 
@@ -993,11 +999,10 @@
           <div class="footer__section">
             <div class="footer__logo">
               <img
-                src="assets/logo.png"
+                src="assets/logo8.png"
                 alt="Автошкола Мустанг"
                 class="footer__logo-image"
               />
-              <span class="footer__logo-text">МУСТАНГ</span>
             </div>
             <p class="footer__description">
               Автошкола «Мустанг» — уверенное вождение с первого занятия. Мы
@@ -1032,14 +1037,14 @@
           <div class="footer__section">
             <h3 class="footer__title">Контакты</h3>
             <div class="footer__contacts">
-              <a href="tel:+79991234567" class="footer__contact"
-                >+7 (999) 123-45-67</a
+              <a href="tel:+79539396666" class="footer__contact"
+                >8-953-939-66-66</a
               >
               <a href="mailto:mustang@avto.ru" class="footer__contact"
                 >mustang@avto.ru</a
               >
               <p class="footer__contact">
-                г. Архангельск, ул. Примерная, д. 15
+                163000 г. Архангельск, пр. Троицкий, д. 67, оф. 413
               </p>
               <p class="footer__contact">Пн–Сб, 9:00–19:00</p>
             </div>
@@ -1059,8 +1064,8 @@
         </div>
 
         <div class="footer__bottom">
-          <p>&copy; 2023 Автошкола «Мустанг». Все права защищены.</p>
-          <p>ОГРН 1132901005599, ИНН 2901237601</p>
+          <p>&copy; 2023 Автошкола «Мустанг». Все права защищены. Директор: Микуров Алексей Николаевич</p>
+          <p>ОГРН 1152901012417, ИНН/КПП 2901263464/290101001</p>
         </div>
       </div>
     </footer>
@@ -1079,19 +1084,67 @@
         </button>
         <h3 class="modal__title">Записаться на обучение</h3>
         <p class="modal__subtitle">Оставьте свои контакты, и мы свяжемся с вами в ближайшее время</p>
-        <form class="modal__form" id="enrollForm">
+
+        <!-- Success Message -->
+        <div class="modal__success" id="successMessage" style="display: none;">
+          <div class="modal__success-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h4 class="modal__success-title">Заявка отправлена!</h4>
+          <p class="modal__success-text">Спасибо! Мы получили вашу заявку и свяжемся с вами в ближайшее время.</p>
+          <button class="btn btn--primary btn--large" id="closeSuccessBtn">
+            Отлично
+          </button>
+        </div>
+
+        <!-- Error Message -->
+        <div class="modal__error" id="errorMessage" style="display: none;">
+          <div class="modal__error-icon">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <h4 class="modal__error-title">Ошибка отправки</h4>
+          <p class="modal__error-text" id="errorText"></p>
+          <button class="btn btn--secondary btn--large" id="closeErrorBtn">
+            Попробовать снова
+          </button>
+        </div>
+
+        <form class="modal__form" id="enrollForm" novalidate>
+          <!-- Honeypot field (скрытое поле для защиты от ботов) -->
+          <input type="text" name="website" style="position: absolute; left: -5000px;" tabindex="-1" autocomplete="off" />
+
           <div class="form__group">
             <label for="modal-name" class="form__label">Ваше имя *</label>
-            <input type="text" id="modal-name" class="form__input" required placeholder="Иван" />
+            <input
+              type="text"
+              id="modal-name"
+              name="name"
+              class="form__input"
+              required
+              minlength="2"
+              placeholder="Иван"
+            />
+            <span class="form__error" id="name-error"></span>
           </div>
 
           <div class="form__group">
             <label for="modal-phone" class="form__label">Телефон *</label>
-            <input type="tel" id="modal-phone" class="form__input" required placeholder="+7 (999) 123-45-67" />
+            <input
+              type="tel"
+              id="modal-phone"
+              name="phone"
+              class="form__input"
+              required
+              placeholder="+7 (___) ___-__-__"
+            />
+            <span class="form__error" id="phone-error"></span>
           </div>
 
           <button type="submit" class="btn btn--primary btn--large btn--block">
-            Отправить заявку
+            <span class="btn__text">Отправить заявку</span>
+            <span class="btn__spinner" style="display: none;">
+              <i class="fas fa-circle-notch fa-spin"></i> Отправка...
+            </span>
           </button>
         </form>
 
@@ -1123,7 +1176,7 @@
       "description": "Автошкола в Архангельске. Обучение вождению категории B на АКПП и МКПП. Современные автомобили, опытные инструкторы, рассрочка 0%.",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "ул. Примерная, д. 15",
+        "streetAddress": "пр. Троицкий, д. 67, оф. 413",
         "addressLocality": "Архангельск",
         "addressRegion": "Архангельская область",
         "postalCode": "163000",
@@ -1131,10 +1184,10 @@
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": "64.5401",
-        "longitude": "40.5433"
+        "latitude": "64.544693",
+        "longitude": "40.516373"
       },
-      "telephone": "+79991234567",
+      "telephone": "+79539396666",
       "email": "mustang@avto.ru",
       "url": "https://mustang-driving.ru",
       "priceRange": "₽₽",

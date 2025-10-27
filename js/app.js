@@ -104,7 +104,7 @@ function initFAQ() {
 // Modal Form
 function initModal() {
     const modal = document.getElementById('enrollModal');
-    const openButtons = document.querySelectorAll('.btn--primary, .start-banner .btn');
+    const openButtons = document.querySelectorAll('[data-modal-open]');
     const closeButton = modal ? modal.querySelector('.modal__close') : null;
     const overlay = modal ? modal.querySelector('.modal__overlay') : null;
 
@@ -114,6 +114,7 @@ function initModal() {
     openButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            resetModalView(); // Сбрасываем вид модального окна при открытии
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
@@ -123,6 +124,10 @@ function initModal() {
     const closeModal = () => {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        // Небольшая задержка перед сбросом, чтобы анимация закрытия прошла
+        setTimeout(() => {
+            resetModalView();
+        }, 300);
     };
 
     if (closeButton) {
@@ -133,6 +138,20 @@ function initModal() {
         overlay.addEventListener('click', closeModal);
     }
 
+    // Кнопки в сообщениях об успехе/ошибке
+    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+    const closeErrorBtn = document.getElementById('closeErrorBtn');
+
+    if (closeSuccessBtn) {
+        closeSuccessBtn.addEventListener('click', closeModal);
+    }
+
+    if (closeErrorBtn) {
+        closeErrorBtn.addEventListener('click', () => {
+            resetModalView(); // Возвращаем форму при нажатии "Попробовать снова"
+        });
+    }
+
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
@@ -141,42 +160,259 @@ function initModal() {
     });
 }
 
+// Phone Mask
+function initPhoneMask() {
+    const phoneInput = document.getElementById('modal-phone');
+    if (!phoneInput) return;
+
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+
+        if (value.length > 0) {
+            if (value[0] === '8') {
+                value = '7' + value.substring(1);
+            } else if (value[0] !== '7') {
+                value = '7' + value;
+            }
+        }
+
+        let formattedValue = '+7';
+        if (value.length > 1) {
+            formattedValue += ' (' + value.substring(1, 4);
+        }
+        if (value.length >= 5) {
+            formattedValue += ') ' + value.substring(4, 7);
+        }
+        if (value.length >= 8) {
+            formattedValue += '-' + value.substring(7, 9);
+        }
+        if (value.length >= 10) {
+            formattedValue += '-' + value.substring(9, 11);
+        }
+
+        e.target.value = formattedValue;
+    });
+
+    phoneInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && e.target.value === '+7') {
+            e.preventDefault();
+        }
+    });
+
+    // Устанавливаем +7 при фокусе, если поле пустое
+    phoneInput.addEventListener('focus', function(e) {
+        if (!e.target.value) {
+            e.target.value = '+7';
+        }
+    });
+}
+
+// Form Validation
+function validateForm(formData) {
+    const errors = {};
+    const name = formData.get('name').trim();
+    const phone = formData.get('phone').trim();
+
+    // Валидация имени
+    if (!name) {
+        errors.name = 'Введите ваше имя';
+    } else if (name.length < 2) {
+        errors.name = 'Имя должно содержать минимум 2 символа';
+    }
+
+    // Валидация телефона
+    if (!phone) {
+        errors.phone = 'Введите номер телефона';
+    } else {
+        const digitsOnly = phone.replace(/\D/g, '');
+        if (digitsOnly.length !== 11) {
+            errors.phone = 'Введите корректный номер телефона';
+        }
+    }
+
+    return errors;
+}
+
+function showError(fieldId, message) {
+    const input = document.getElementById(fieldId);
+    const errorSpan = document.getElementById(fieldId.replace('modal-', '') + '-error');
+
+    if (input) input.classList.add('error');
+    if (errorSpan) errorSpan.textContent = message;
+}
+
+function clearError(fieldId) {
+    const input = document.getElementById(fieldId);
+    const errorSpan = document.getElementById(fieldId.replace('modal-', '') + '-error');
+
+    if (input) input.classList.remove('error');
+    if (errorSpan) errorSpan.textContent = '';
+}
+
+function clearAllErrors() {
+    clearError('modal-name');
+    clearError('modal-phone');
+}
+
+// Show/Hide Modal Messages
+function showSuccessMessage() {
+    const form = document.getElementById('enrollForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const divider = document.querySelector('.modal__divider');
+    const alternative = document.querySelector('.modal__alternative');
+    const title = document.querySelector('.modal__title');
+    const subtitle = document.querySelector('.modal__subtitle');
+
+    // Скрываем форму и другие элементы
+    if (form) form.style.display = 'none';
+    if (divider) divider.style.display = 'none';
+    if (alternative) alternative.style.display = 'none';
+    if (title) title.style.display = 'none';
+    if (subtitle) subtitle.style.display = 'none';
+    if (errorMessage) errorMessage.style.display = 'none';
+
+    // Показываем сообщение об успехе
+    if (successMessage) successMessage.style.display = 'block';
+}
+
+function showErrorMessage(message) {
+    const form = document.getElementById('enrollForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const divider = document.querySelector('.modal__divider');
+    const alternative = document.querySelector('.modal__alternative');
+    const title = document.querySelector('.modal__title');
+    const subtitle = document.querySelector('.modal__subtitle');
+
+    // Скрываем форму и другие элементы
+    if (form) form.style.display = 'none';
+    if (divider) divider.style.display = 'none';
+    if (alternative) alternative.style.display = 'none';
+    if (title) title.style.display = 'none';
+    if (subtitle) subtitle.style.display = 'none';
+    if (successMessage) successMessage.style.display = 'none';
+
+    // Показываем сообщение об ошибке
+    if (errorMessage) errorMessage.style.display = 'block';
+    if (errorText) errorText.textContent = message;
+}
+
+function resetModalView() {
+    const form = document.getElementById('enrollForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const divider = document.querySelector('.modal__divider');
+    const alternative = document.querySelector('.modal__alternative');
+    const title = document.querySelector('.modal__title');
+    const subtitle = document.querySelector('.modal__subtitle');
+
+    // Показываем форму и все элементы
+    if (form) form.style.display = 'block';
+    if (divider) divider.style.display = 'block';
+    if (alternative) alternative.style.display = 'block';
+    if (title) title.style.display = 'block';
+    if (subtitle) subtitle.style.display = 'block';
+
+    // Скрываем сообщения
+    if (successMessage) successMessage.style.display = 'none';
+    if (errorMessage) errorMessage.style.display = 'none';
+}
+
 // Form Submission
 function initForms() {
     const enrollForm = document.getElementById('enrollForm');
-    if (enrollForm) {
-        enrollForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    if (!enrollForm) return;
 
-            const name = this.querySelector('#modal-name').value.trim();
-            const phone = this.querySelector('#modal-phone').value.trim();
+    // Инициализация маски телефона
+    initPhoneMask();
 
-            if (!name || !phone) {
-                alert('Пожалуйста, заполните обязательные поля');
-                return;
-            }
+    // Очистка ошибок при вводе
+    const nameInput = document.getElementById('modal-name');
+    const phoneInput = document.getElementById('modal-phone');
 
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-
-            submitBtn.textContent = 'Отправка...';
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                alert('Спасибо! Мы свяжемся с вами в ближайшее время.');
-                this.reset();
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-
-                // Close modal
-                const modal = document.getElementById('enrollModal');
-                if (modal) {
-                    modal.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            }, 1500);
-        });
+    if (nameInput) {
+        nameInput.addEventListener('input', () => clearError('modal-name'));
     }
+    if (phoneInput) {
+        phoneInput.addEventListener('input', () => clearError('modal-phone'));
+    }
+
+    enrollForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearAllErrors();
+
+        const formData = new FormData(this);
+
+        // Honeypot check - защита от ботов
+        if (formData.get('website')) {
+            console.warn('Bot detected via honeypot');
+            showErrorMessage('Ошибка отправки. Пожалуйста, попробуйте позже.');
+            return;
+        }
+
+        const errors = validateForm(formData);
+
+        // Показываем ошибки валидации
+        if (Object.keys(errors).length > 0) {
+            if (errors.name) showError('modal-name', errors.name);
+            if (errors.phone) showError('modal-phone', errors.phone);
+            return;
+        }
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const btnText = submitBtn.querySelector('.btn__text');
+        const btnSpinner = submitBtn.querySelector('.btn__spinner');
+
+        // Показываем спиннер
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline-block';
+        submitBtn.disabled = true;
+
+        // Отправка данных через Netlify Function (безопасно!)
+        try {
+            console.log('Отправка заявки через Netlify Function...');
+
+            // Отправляем через Netlify Serverless Function
+            // Токен скрыт на сервере Netlify!
+            const response = await fetch('/.netlify/functions/send-telegram', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(formData)
+            });
+
+            const result = await response.json();
+            console.log('Результат отправки:', result);
+
+            // Скрываем спиннер
+            btnText.style.display = 'inline-block';
+            btnSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+
+            if (result.success) {
+                // Показываем сообщение об успехе
+                showSuccessMessage();
+                this.reset();
+                clearAllErrors();
+            } else {
+                // Показываем сообщение об ошибке
+                showErrorMessage(result.message || 'Произошла ошибка. Пожалуйста, попробуйте позже или позвоните нам напрямую.');
+            }
+        } catch (error) {
+            console.error('Ошибка отправки формы:', error);
+
+            // Скрываем спиннер
+            btnText.style.display = 'inline-block';
+            btnSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+
+            // Показываем сообщение об ошибке
+            showErrorMessage('Произошла ошибка при отправке заявки. Пожалуйста, позвоните нам напрямую по телефону 8-953-939-66-66');
+        }
+    });
 }
 
 // Smooth scrolling for anchor links
@@ -265,6 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initStats();
     initYandexMap();
     initBackToTop();
+    loadStartDate(); // Загружаем актуальную дату старта
 
     // Clear any inline header styles
     const header = document.getElementById('header');
@@ -365,4 +602,23 @@ function initStats() {
     }, { threshold: 0.3 });
 
     io.observe(section);
+}
+
+// Load Start Date from Netlify Function
+async function loadStartDate() {
+    try {
+        const response = await fetch('/.netlify/functions/get-start-date');
+        const data = await response.json();
+
+        if (data.success && data.date) {
+            // Обновляем дату на странице
+            const dateElement = document.querySelector('.start-banner__date');
+            if (dateElement) {
+                dateElement.textContent = data.date;
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки даты старта:', error);
+        // Оставляем дату по умолчанию из HTML
+    }
 }

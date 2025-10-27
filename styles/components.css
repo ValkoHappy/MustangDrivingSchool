@@ -141,6 +141,12 @@
     gap: 1.5rem;
 }
 
+.header__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
 .phone {
     display: flex;
     align-items: center;
@@ -152,6 +158,18 @@
 
 .phone:hover {
     color: var(--primary);
+}
+
+.header__address {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fz-sm);
+    color: var(--text-muted);
+}
+
+.header__address i {
+    font-size: 0.75rem;
 }
 
 .nav-toggle {
@@ -1872,8 +1890,97 @@
     box-shadow: 0 0 0 3px rgba(2, 187, 208, 0.1);
 }
 
+.modal__form .form__input.error {
+    border-color: #dc3545;
+}
+
+.modal__form .form__error {
+    display: block;
+    color: #dc3545;
+    font-size: var(--fz-sm);
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+}
+
 .modal__form .btn {
     margin-top: 0.5rem;
+}
+
+/* Modal Success Message */
+.modal__success,
+.modal__error {
+    text-align: center;
+    padding: 2rem 1rem;
+    animation: fadeInScale 0.4s ease;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal__success-icon {
+    font-size: 4rem;
+    color: #28a745;
+    margin-bottom: 1rem;
+    animation: successPulse 0.6s ease;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.modal__error-icon {
+    font-size: 4rem;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.modal__success-title,
+.modal__error-title {
+    font-size: var(--fz-2xl);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.modal__success-text,
+.modal__error-text {
+    font-size: var(--fz-base);
+    color: var(--text-gray);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.modal__success .btn,
+.modal__error .btn {
+    min-width: 200px;
+    color: var(--white) !important;
+    font-weight: 600;
+}
+
+.modal__error .btn {
+    background: var(--text-dark) !important;
+    border-color: var(--text-dark) !important;
+}
+
+.modal__error .btn:hover {
+    background: var(--text-dark) !important;
+    border-color: var(--text-dark) !important;
+    color: var(--white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Modal Divider */
@@ -2021,6 +2128,7 @@
     .nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
     .header__actions .phone span { display: none; }
+    .header__address { display: none; }
 }
 
 /* Responsive — Hero */
