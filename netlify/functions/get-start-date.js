@@ -21,7 +21,22 @@ exports.handler = async (event) => {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/getChat?chat_id=${CHAT_ID}`;
 
     const response = await fetch(url);
-    const data = await response.json();
+    let data = await response.json();
+
+    // Handle migrated group → supergroup by retrying with new chat id
+    if (!data.ok && data.parameters && data.parameters.migrate_to_chat_id) {
+      const newChatId = data.parameters.migrate_to_chat_id;
+      try {
+        const retry = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChat?chat_id=${newChatId}`);
+        const retryData = await retry.json();
+        if (retryData.ok) {
+          data = retryData;
+          console.warn('TELEGRAM_CHAT_ID migrated. Update env to:', newChatId);
+        }
+      } catch (e) {
+        console.error('Retry getChat after migration failed:', e);
+      }
+    }
 
     // Ищем START_DATE: в описании группы
     if (data.ok && data.result && data.result.description) {
