@@ -1264,47 +1264,48 @@
       </div>
     </div>
 
-    <!-- Отложенная загрузка AOS для мобильных -->
+    <!-- AOS - НЕ загружаем на мобильных для производительности -->
     <script>
-      // Оптимизация: загружаем AOS только когда нужно
-      function loadAOS() {
-        if (typeof AOS === 'undefined') {
-          const script = document.createElement('script');
-          script.src = 'https://unpkg.com/aos@next/dist/aos.js';
-          script.async = true;
-          document.body.appendChild(script);
-          script.onload = () => {
-            if (typeof AOS !== 'undefined' && typeof initAnimations === 'function') {
-              // Переинициализируем анимации после загрузки AOS
-              setTimeout(() => {
-                initAnimations();
-                if (AOS.refreshHard) AOS.refreshHard();
-              }, 100);
-            }
-          };
+      // Оптимизация: не загружаем AOS на мобильных вообще
+      const isMobile = window.innerWidth <= 768;
+      
+      // Проверка слабого устройства
+      function isLowEndDevice() {
+        if ('connection' in navigator) {
+          const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+          if (conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) {
+            return true;
+          }
         }
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return true;
+        if (navigator.deviceMemory && navigator.deviceMemory <= 2) return true;
+        return false;
       }
       
-      // Для мобильных устройств откладываем загрузку AOS
-      if (window.innerWidth <= 768) {
-        // Загружаем AOS при первом скролле
-        let aosLoaded = false;
-        function checkAOSLoad() {
-          if (aosLoaded) return;
-          aosLoaded = true;
-          loadAOS();
-          window.removeEventListener('scroll', checkAOSLoad);
-          window.removeEventListener('touchstart', checkAOSLoad);
-        }
-        window.addEventListener('scroll', checkAOSLoad, { passive: true, once: true });
-        window.addEventListener('touchstart', checkAOSLoad, { passive: true, once: true });
-        // Загружаем через 2 секунды если пользователь не скроллил
-        setTimeout(() => {
-          if (!aosLoaded) loadAOS();
-        }, 2000);
+      // На мобильных и слабых устройствах НЕ загружаем AOS вообще
+      if (!isMobile && !isLowEndDevice()) {
+        // Только на десктопах загружаем AOS
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/aos@next/dist/aos.js';
+        script.async = true;
+        document.body.appendChild(script);
       } else {
-        // Для десктопов загружаем сразу
-        loadAOS();
+        // На мобильных сразу добавляем класс aos-animate всем элементам
+        document.addEventListener('DOMContentLoaded', () => {
+          const els = document.querySelectorAll('[data-aos]');
+          els.forEach(el => {
+            el.classList.add('aos-animate');
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          });
+          // Отключаем анимацию машины
+          const carImg = document.querySelector('.hero__image');
+          if (carImg) {
+            carImg.style.animation = 'none';
+            carImg.style.opacity = '1';
+            carImg.style.transform = 'none';
+          }
+        });
       }
     </script>
     <script src="js/app.js" defer></script>

@@ -191,16 +191,58 @@ a {
     }
 }
 
-/* Оптимизация производительности для мобильных */
+/* Оптимизация производительности для мобильных - отключаем анимации */
 @media (max-width: 768px) {
-    /* Включаем оптимизации GPU для критичных элементов */
-    .hero,
+    /* Полностью отключаем все анимации на мобильных */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    /* Сразу показываем все элементы с анимациями */
+    [data-aos],
+    [data-aos].aos-animate,
+    .aos-animate {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    /* Отключаем анимацию машины */
     .hero__image,
-    .hero__text,
-    [data-aos] {
+    .hero__image.aos-animate {
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+    
+    /* Отключаем hover эффекты на мобильных */
+    .benefit-card:hover,
+    .pricing-card:hover,
+    .review-card:hover,
+    .fleet-card:hover,
+    .process__item:hover,
+    .gallery-item:hover {
+        transform: none !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    
+    /* Отключаем счетчики анимацию на мобильных */
+    .stats .stat__value {
+        animation: none !important;
+    }
+    
+    /* Включаем оптимизации GPU только для критичных элементов */
+    .hero,
+    .hero__bg {
         transform: translateZ(0);
         backface-visibility: hidden;
-        perspective: 1000px;
+        contain: layout style paint;
     }
 }
 

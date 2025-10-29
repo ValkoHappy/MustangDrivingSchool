@@ -17,22 +17,72 @@ function applyBrandPalette() {
     root.style.setProperty('--header-bg-scrolled', palette.headerBgScrolled);
 }
 
+// Определение слабого устройства
+function isLowEndDevice() {
+    // Проверяем наличие информации о производительности
+    if ('connection' in navigator) {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        // 2G или slow-2g
+        if (connection && (connection.effectiveType === '2g' || connection.effectiveType === 'slow-2g')) {
+            return true;
+        }
+    }
+    
+    // Проверяем количество ядер (если доступно)
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) {
+        return true;
+    }
+    
+    // Проверяем доступную память (если доступно)
+    if (navigator.deviceMemory && navigator.deviceMemory <= 2) {
+        return true;
+    }
+    
+    return false;
+}
+
 // Initialize AOS with reduced motion support
 function initAnimations() {
-    // Оптимизация для мобильных: уменьшаем offset и duration
+    // Отключаем анимации на мобильных для лучшей производительности
     const isMobile = window.innerWidth <= 768;
+    const isLowEnd = isLowEndDevice();
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
+    // Полностью отключаем AOS на мобильных или слабых устройствах
+    if (isMobile || isLowEnd || reduce) {
+        // Отключаем AOS и сразу показываем все элементы
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ disable: 'mobile' }); // Отключаем на мобильных
+        }
+        
+        // Сразу показываем все элементы
+        const els = document.querySelectorAll('[data-aos]');
+        els.forEach(el => {
+            el.classList.add('aos-animate');
+            // Добавляем класс для отключения анимаций в CSS
+            el.classList.add('no-animation');
+        });
+        
+        // Отключаем анимации картинки машины
+        const carImage = document.querySelector('.hero__image');
+        if (carImage) {
+            carImage.classList.add('no-animation');
+        }
+        
+        return; // Выходим, не продолжая инициализацию
+    }
+    
+    // Для десктопов загружаем AOS как обычно
     if (typeof AOS !== 'undefined') {
         AOS.init({
             once: true,
-            offset: isMobile ? 50 : 120, // Меньший offset для мобильных
-            duration: reduce ? 400 : (isMobile ? 600 : 900), // Быстрее на мобильных
+            offset: 120,
+            duration: reduce ? 400 : 900,
             easing: 'ease-out-cubic',
             disable: false,
             startEvent: 'DOMContentLoaded'
         });
-        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, isMobile ? 200 : 400);
+        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, 400);
     } else {
         // Fallback: показать элементы без AOS
         const els = document.querySelectorAll('[data-aos]');
@@ -44,10 +94,7 @@ function initAnimations() {
                         io.unobserve(e.target);
                     }
                 });
-            }, { 
-                threshold: 0.15, 
-                rootMargin: isMobile ? '0px 0px -5% 0px' : '0px 0px -10% 0px' 
-            });
+            }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
             els.forEach(el => io.observe(el));
         } else {
             els.forEach(el => el.classList.add('aos-animate'));
@@ -588,19 +635,30 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStartDate(); // Загружаем актуальную дату старта
 
     // Средней важности - загружаем с небольшой задержкой на мобильных
-    setTimeout(() => {
-        initAnimations();
-        if (typeof AOS === "undefined") { 
-            setTimeout(enforceOnScrollAnimations, 300); 
-        }
-        
-        // Clear any inline header styles
-        const header = document.getElementById('header');
-        if (header) {
-            header.style.background = '';
-            header.style.backdropFilter = '';
-        }
-    }, isMobile ? 300 : 0);
+    // НО на мобильных initAnimations уже не нужна, т.к. элементы показываются сразу
+    if (!isMobile) {
+        setTimeout(() => {
+            initAnimations();
+            if (typeof AOS === "undefined") { 
+                setTimeout(enforceOnScrollAnimations, 300); 
+            }
+        }, 0);
+    } else {
+        // На мобильных сразу показываем все элементы
+        const aosElements = document.querySelectorAll('[data-aos]');
+        aosElements.forEach(el => {
+            el.classList.add('aos-animate');
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+    }
+    
+    // Clear any inline header styles
+    const header = document.getElementById('header');
+    if (header) {
+        header.style.background = '';
+        header.style.backdropFilter = '';
+    }
     
     // Тяжелые функции - загружаем когда нужно
     // Яндекс карта загружается через функцию в HTML
@@ -649,6 +707,23 @@ function countUp(el, to, { duration = 1200, suffix = '', onProgress } = {}) {
 function initStats() {
     const section = document.getElementById('stats');
     if (!section) return;
+
+    // На мобильных отключаем анимацию счетчиков для производительности
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        const cards = Array.from(section.querySelectorAll('.stat'));
+        cards.forEach((c) => {
+            const v = c.querySelector('.stat__value');
+            if (v) {
+                v.textContent = `${c.dataset.target}${c.dataset.suffix || ''}`;
+            }
+        });
+        const progress = section.querySelector('.stats__progress');
+        const fill = section.querySelector('.stats__progress-fill');
+        if (progress) progress.setAttribute('aria-valuenow', '100');
+        if (fill) fill.style.width = '100%';
+        return;
+    }
 
     const cards = Array.from(section.querySelectorAll('.stat'));
     const progress = section.querySelector('.stats__progress');

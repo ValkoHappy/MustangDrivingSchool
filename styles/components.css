@@ -2512,6 +2512,13 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
     [data-aos] {
         transition: none !important;
         transform: none !important;
@@ -2543,6 +2550,17 @@
     .stat:hover {
         transform: none !important;
     }
+}
+
+/* Дополнительно: отключаем анимации на слабых устройствах через класс */
+.no-animation,
+.no-animation *,
+.no-animation *::before,
+.no-animation *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
 }
 
 /* Mobile optimizations for animations */
