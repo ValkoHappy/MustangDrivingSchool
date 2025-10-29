@@ -632,6 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initForms();
     initSmoothScroll();
     initBackToTop();
+    initReviewsSlider(); // Инициализируем слайдер отзывов
     loadStartDate(); // Загружаем актуальную дату старта
 
     // Средней важности - загружаем с небольшой задержкой на мобильных
@@ -803,4 +804,146 @@ async function loadStartDate() {
         console.error('Ошибка загрузки даты старта:', error);
         // Оставляем дату по умолчанию из HTML
     }
+}
+
+// Initialize Reviews Slider
+function initReviewsSlider() {
+    const track = document.getElementById('reviewsTrack');
+    const prevBtn = document.getElementById('reviewsPrev');
+    const nextBtn = document.getElementById('reviewsNext');
+    const dotsContainer = document.getElementById('reviewsDots');
+    
+    if (!track || !prevBtn || !nextBtn || !dotsContainer) {
+        return; // Элементы не найдены
+    }
+    
+    const cards = track.querySelectorAll('.review-card');
+    const totalCards = cards.length;
+    let currentIndex = 0;
+    
+    // Определяем количество видимых карточек
+    function getVisibleCount() {
+        const width = window.innerWidth;
+        if (width <= 768) return 1;
+        if (width <= 1024) return 2;
+        return 3;
+    }
+    
+    // Получаем ширину одной карточки (включая gap)
+    function getCardWidth() {
+        const firstCard = cards[0];
+        if (!firstCard) return 0;
+        const trackRect = track.getBoundingClientRect();
+        const sliderRect = track.parentElement.getBoundingClientRect();
+        const visibleCount = getVisibleCount();
+        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+        
+        // Точная ширина: ширина видимой области делим на количество карточек
+        const cardWidth = (sliderRect.width - (gap * (visibleCount - 1))) / visibleCount;
+        return cardWidth + gap;
+    }
+    
+    // Создаем точки навигации
+    function createDots() {
+        dotsContainer.innerHTML = '';
+        const visibleCount = getVisibleCount();
+        const totalDots = Math.max(1, totalCards - visibleCount + 1);
+        
+        for (let i = 0; i < totalDots; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'reviews__dot';
+            if (i === 0) dot.classList.add('reviews__dot--active');
+            dot.setAttribute('aria-label', `Перейти к группе отзывов ${i + 1}`);
+            dot.addEventListener('click', () => goToIndex(i));
+            dotsContainer.appendChild(dot);
+        }
+    }
+    
+    // Переход к индексу
+    function goToIndex(index) {
+        const visibleCount = getVisibleCount();
+        const maxIndex = Math.max(0, totalCards - visibleCount);
+        
+        if (index < 0 || index > maxIndex) return;
+        
+        currentIndex = index;
+        
+        // Более точный расчет с учетом реальной позиции карточки
+        const firstCard = cards[0];
+        if (!firstCard) return;
+        
+        // Используем offsetWidth для более точного расчета
+        const cardWidth = firstCard.offsetWidth;
+        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+        
+        // Если gap не определен, пробуем вычислить из разницы позиций карточек
+        let actualGap = gap;
+        if (cards.length > 1 && gap === 0) {
+            const secondCard = cards[1];
+            const firstRect = firstCard.getBoundingClientRect();
+            const secondRect = secondCard.getBoundingClientRect();
+            actualGap = secondRect.left - firstRect.right;
+        }
+        
+        // Смещение = индекс * (ширина карточки + gap)
+        const translateX = -currentIndex * (cardWidth + actualGap);
+        
+        track.style.transform = `translateX(${translateX}px)`;
+        
+        // Обновляем точки
+        const dots = dotsContainer.querySelectorAll('.reviews__dot');
+        dots.forEach((dot, i) => {
+            if (i === currentIndex) {
+                dot.classList.add('reviews__dot--active');
+            } else {
+                dot.classList.remove('reviews__dot--active');
+            }
+        });
+        
+        // Обновляем кнопки
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
+    }
+    
+    // Переход на один шаг вперед/назад
+    function nextSlide() {
+        const visibleCount = getVisibleCount();
+        const maxIndex = Math.max(0, totalCards - visibleCount);
+        if (currentIndex < maxIndex) {
+            goToIndex(currentIndex + 1);
+        }
+    }
+    
+    function prevSlide() {
+        if (currentIndex > 0) {
+            goToIndex(currentIndex - 1);
+        }
+    }
+    
+    // Обработчики кнопок
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Обновление при изменении размера окна
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            createDots();
+            goToIndex(Math.min(currentIndex, Math.max(0, totalCards - getVisibleCount())));
+        }, 250);
+    });
+    
+    // Инициализация с небольшой задержкой для правильного расчета размеров
+    setTimeout(() => {
+        createDots();
+        goToIndex(0);
+        
+        // Принудительное обновление позиции после загрузки
+        setTimeout(() => {
+            if (currentIndex > 0) {
+                goToIndex(currentIndex);
+            }
+        }, 100);
+    }, 50);
 }
