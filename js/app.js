@@ -19,23 +19,21 @@ function applyBrandPalette() {
 
 // Initialize AOS with reduced motion support
 function initAnimations() {
+    // Оптимизация для мобильных: уменьшаем offset и duration
+    const isMobile = window.innerWidth <= 768;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
     if (typeof AOS !== 'undefined') {
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         AOS.init({
             once: true,
-            offset: 120,
-            duration: reduce ? 400 : 900,
+            offset: isMobile ? 50 : 120, // Меньший offset для мобильных
+            duration: reduce ? 400 : (isMobile ? 600 : 900), // Быстрее на мобильных
             easing: 'ease-out-cubic',
-            disable: false, // always enable; we manage reduction via shorter duration
+            disable: false,
             startEvent: 'DOMContentLoaded'
         });
-        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, 400);
-
-        // Safety: if for какой-то причине класс aos-animate не присвоился
-        // принудительно делаем элементы видимыми через небольшой таймаут
-        
+        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, isMobile ? 200 : 400);
     } else {
-        console.warn('AOS not loaded — applying visibility fallback');
         // Fallback: показать элементы без AOS
         const els = document.querySelectorAll('[data-aos]');
         if ('IntersectionObserver' in window) {
@@ -46,7 +44,10 @@ function initAnimations() {
                         io.unobserve(e.target);
                     }
                 });
-            }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+            }, { 
+                threshold: 0.15, 
+                rootMargin: isMobile ? '0px 0px -5% 0px' : '0px 0px -10% 0px' 
+            });
             els.forEach(el => io.observe(el));
         } else {
             els.forEach(el => el.classList.add('aos-animate'));
@@ -480,28 +481,43 @@ function initSmoothScroll() {
 function initYandexMap() {
     if (typeof ymaps === 'undefined') {
         console.warn('Yandex Maps API not loaded');
+        // Если карта не загружена, пробуем загрузить
+        if (typeof loadYandexMap === 'function') {
+            loadYandexMap();
+        }
+        return;
+    }
+
+    // Проверяем наличие контейнера
+    const mapContainer = document.getElementById('yandex-map');
+    if (!mapContainer) {
         return;
     }
 
     ymaps.ready(function () {
-        const coordinates = [64.544693, 40.516373];
+        try {
+            const coordinates = [64.544693, 40.516373];
+            const isMobile = window.innerWidth <= 768;
 
-        const map = new ymaps.Map('yandex-map', {
-            center: coordinates,
-            zoom: 16,
-            controls: ['zoomControl', 'fullscreenControl']
-        });
+            const map = new ymaps.Map('yandex-map', {
+                center: coordinates,
+                zoom: isMobile ? 15 : 16, // Меньший zoom для мобильных
+                controls: isMobile ? ['zoomControl'] : ['zoomControl', 'fullscreenControl'] // Меньше контролов на мобильных
+            });
 
-        // Добавляем метку
-        const placemark = new ymaps.Placemark(coordinates, {
-            balloonContent: '<strong>Автошкола «Мустанг»</strong><br>г. Архангельск, пр. Троицкий, д. 67, оф. 413<br>ТЦ «Пирамида», 4 этаж<br><a href="tel:+79539396666">8-953-939-66-66</a>',
-            hintContent: 'Автошкола «Мустанг» — ТЦ «Пирамида»'
-        }, {
-            preset: 'islands#blueDotIcon',
-            iconColor: '#02BBD0'
-        });
+            // Добавляем метку
+            const placemark = new ymaps.Placemark(coordinates, {
+                balloonContent: '<strong>Автошкола «Мустанг»</strong><br>г. Архангельск, пр. Троицкий, д. 67, оф. 413<br>ТЦ «Пирамида», 4 этаж<br><a href="tel:+79539396666">8-953-939-66-66</a>',
+                hintContent: 'Автошкола «Мустанг» — ТЦ «Пирамида»'
+            }, {
+                preset: 'islands#blueDotIcon',
+                iconColor: '#02BBD0'
+            });
 
-        map.geoObjects.add(placemark);
+            map.geoObjects.add(placemark);
+        } catch (error) {
+            console.error('Ошибка инициализации Яндекс карты:', error);
+        }
     });
 }
 
@@ -558,25 +574,48 @@ window.addEventListener('resize', (() => {
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     applyBrandPalette();
-    initAnimations();
+    
+    // Откладываем тяжелые функции для мобильных
+    const isMobile = window.innerWidth <= 768;
+    
+    // Критические функции - загружаем сразу
     initMobileNav();
     initFAQ();
     initModal();
     initForms();
     initSmoothScroll();
-    initStats();
-    initYandexMap();
     initBackToTop();
-    // Use fallback only if AOS is missing
-    if (typeof AOS === "undefined") { setTimeout(enforceOnScrollAnimations, 300); }
     loadStartDate(); // Загружаем актуальную дату старта
 
-    // Clear any inline header styles
-    const header = document.getElementById('header');
-    if (header) {
-        header.style.background = '';
-        header.style.backdropFilter = '';
+    // Средней важности - загружаем с небольшой задержкой на мобильных
+    setTimeout(() => {
+        initAnimations();
+        if (typeof AOS === "undefined") { 
+            setTimeout(enforceOnScrollAnimations, 300); 
+        }
+        
+        // Clear any inline header styles
+        const header = document.getElementById('header');
+        if (header) {
+            header.style.background = '';
+            header.style.backdropFilter = '';
+        }
+    }, isMobile ? 300 : 0);
+    
+    // Тяжелые функции - загружаем когда нужно
+    // Яндекс карта загружается через функцию в HTML
+    // Статистика загружается при прокрутке (IntersectionObserver в initStats)
+    if (!isMobile) {
+        // На десктопе можно загрузить карту сразу если нужно
+        setTimeout(() => {
+            if (typeof ymaps !== 'undefined') {
+                initYandexMap();
+            }
+        }, 2000);
     }
+    
+    // Инициализация статистики будет происходить при скролле
+    initStats();
 });
 
 // Check for reduced motion preference

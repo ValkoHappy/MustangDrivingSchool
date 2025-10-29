@@ -2,8 +2,12 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
     <meta name="color-scheme" content="light dark" />
+    <!-- Оптимизация для мобильных -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
     <title>Автошкола «Мустанг» — уверенное вождение с первого занятия</title>
     <meta
       name="description"
@@ -41,28 +45,83 @@
     />
     <meta property="twitter:image" content="https://mustang-driving.ru/assets/og-image.jpg" />
 
-    <!-- Fonts -->
+    <!-- Fonts - оптимизация для мобильных -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- Icons -->
+    <!-- Icons - отложенная загрузка -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      media="print"
+      onload="this.media='all'"
     />
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      />
+    </noscript>
+    
+    <!-- AOS - отложенная загрузка для мобильных -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    </noscript>
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/components.css" />
     <link rel="stylesheet" href="styles/gallery.css" />
 
-    <!-- Yandex Maps API -->
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU" type="text/javascript"></script>
+    <!-- Yandex Maps API - отложенная загрузка для мобильных -->
+    <script>
+      // Отложенная загрузка Яндекс карты только при необходимости
+      function loadYandexMap() {
+        if (typeof ymaps === 'undefined') {
+          const script = document.createElement('script');
+          script.src = 'https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU';
+          script.type = 'text/javascript';
+          script.async = true;
+          document.head.appendChild(script);
+          script.onload = () => {
+            if (typeof initYandexMap === 'function') {
+              setTimeout(initYandexMap, 500);
+            }
+          };
+        }
+      }
+      
+      // Загружаем карту только когда секция контактов близко к видимости
+      let mapLoaded = false;
+      function checkMapLoad() {
+        if (mapLoaded) return;
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          const rect = contactSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight + 500) {
+            mapLoaded = true;
+            loadYandexMap();
+            window.removeEventListener('scroll', checkMapLoad);
+          }
+        }
+      }
+      window.addEventListener('scroll', checkMapLoad, { passive: true });
+      // Проверяем сразу при загрузке
+      setTimeout(checkMapLoad, 1000);
+    </script>
   </head>
   <body>
     <!-- Header -->
@@ -167,15 +226,16 @@
 
             <!-- Car with Animation -->
             <div class="hero__image-wrapper">
-              <img
-                src="assets/mustang.png"
-                alt="Автомобиль Mustang"
-                class="hero__image"
-                data-aos="custom-car-in"
-                data-aos-duration="900"
-                data-aos-delay="550"
-                data-aos-easing="cubic-bezier(0.22, 1, 0.36, 1)"
-              />
+                <img
+              src="assets/mustang.png"
+              alt="Автомобиль Mustang"
+              class="hero__image"
+              loading="eager"
+              data-aos="custom-car-in"
+              data-aos-duration="900"
+              data-aos-delay="550"
+              data-aos-easing="cubic-bezier(0.22, 1, 0.36, 1)"
+            />
               <div class="car-shadow" data-aos-delay="200"></div>
             </div>
           </div>
@@ -191,7 +251,7 @@
         <div class="about__main">
             <div class="about__visual" data-aos="fade-right">
                 <div class="about__image-wrapper">
-                    <img src="assets/about-main.jpg" alt="Учебный класс автошколы" class="about__image">
+                    <img src="assets/about-main.jpg" alt="Учебный класс автошколы" class="about__image" loading="lazy">
                 </div>
             </div>
             
@@ -415,7 +475,7 @@
               <div class="fleet-card fleet-card--horizontal">
                 <div class="fleet-card__badge">АКПП</div>
                 <div class="fleet-card__image-large">
-                  <img src="assets/HyundaiSolaris1.png" alt="Hyundai Solaris АКПП" />
+                  <img src="assets/HyundaiSolaris1.png" alt="Hyundai Solaris АКПП" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Hyundai Solaris</h4>
@@ -432,7 +492,7 @@
               <div class="fleet-card fleet-card--horizontal">
                 <div class="fleet-card__badge">АКПП</div>
                 <div class="fleet-card__image-large">
-                  <img src="assets/OmodaC5.png" alt="Omoda C5" />
+                  <img src="assets/OmodaC5.png" alt="Omoda C5" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Omoda C5</h4>
@@ -459,7 +519,7 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/RenaultDuster.png" alt="Renault Duster" />
+                  <img src="assets/RenaultDuster.png" alt="Renault Duster" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Renault Duster</h4>
@@ -476,7 +536,7 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/HyundaiSolaris.png" alt="Hyundai Solaris МКПП" />
+                  <img src="assets/HyundaiSolaris.png" alt="Hyundai Solaris МКПП" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Hyundai Solaris</h4>
@@ -493,7 +553,7 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/LadaGranta.png" alt="Lada Granta" />
+                  <img src="assets/LadaGranta.png" alt="Lada Granta" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Lada Granta</h4>
@@ -607,7 +667,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Анастасия" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=47" alt="Анастасия" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Анастасия</div>
                   <div class="review-card__details">Выпускница 2024</div>
@@ -636,7 +696,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=12" alt="Сергей" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=12" alt="Сергей" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Сергей</div>
                   <div class="review-card__details">Категория B</div>
@@ -665,7 +725,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=33" alt="Максим" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=33" alt="Максим" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Максим</div>
                   <div class="review-card__details">Выпускник 2023</div>
@@ -695,7 +755,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=48" alt="Екатерина" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=48" alt="Екатерина" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Екатерина</div>
                   <div class="review-card__details">Выпускница 2024</div>
@@ -725,7 +785,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=45" alt="Катерина" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=45" alt="Катерина" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Катерина</div>
                   <div class="review-card__details">Выпускница 2024</div>
@@ -755,7 +815,7 @@
             </div>
             <div class="review-card__footer">
               <div class="review-card__author">
-                <img src="https://i.pravatar.cc/150?img=49" alt="Диана" class="review-card__avatar-img" />
+                <img src="https://i.pravatar.cc/150?img=49" alt="Диана" class="review-card__avatar-img" loading="lazy" />
                 <div class="review-card__info">
                   <div class="review-card__name">Диана</div>
                   <div class="review-card__details">Выпускница 2023</div>
@@ -796,27 +856,27 @@
         
         <div class="gallery__grid">
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
-                <img src="assets/gallery/photo1.jpg" alt="Выпуск 2024 года" class="gallery-item__image">
+                <img src="assets/gallery/photo1.jpg" alt="Выпуск 2024 года" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="150">
-                <img src="assets/gallery/photo2.jpg" alt="Торжественное вручение прав" class="gallery-item__image">
+                <img src="assets/gallery/photo2.jpg" alt="Торжественное вручение прав" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
-                <img src="assets/gallery/photo3.jpg" alt="Групповое фото выпускников" class="gallery-item__image">
+                <img src="assets/gallery/photo3.jpg" alt="Групповое фото выпускников" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="250">
-                <img src="assets/gallery/photo4.jpg" alt="Инструкторы с выпускниками" class="gallery-item__image">
+                <img src="assets/gallery/photo4.jpg" alt="Инструкторы с выпускниками" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
-                <img src="assets/gallery/photo5.jpg" alt="Праздничный выпускной" class="gallery-item__image">
+                <img src="assets/gallery/photo5.jpg" alt="Праздничный выпускной" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="350">
-                <img src="assets/gallery/photo6.jpg" alt="Успешная сдача экзамена" class="gallery-item__image">
+                <img src="assets/gallery/photo6.jpg" alt="Успешная сдача экзамена" class="gallery-item__image" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="400">
@@ -1204,9 +1264,51 @@
       </div>
     </div>
 
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/gallery.js"></script>
+    <!-- Отложенная загрузка AOS для мобильных -->
+    <script>
+      // Оптимизация: загружаем AOS только когда нужно
+      function loadAOS() {
+        if (typeof AOS === 'undefined') {
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/aos@next/dist/aos.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
+            if (typeof AOS !== 'undefined' && typeof initAnimations === 'function') {
+              // Переинициализируем анимации после загрузки AOS
+              setTimeout(() => {
+                initAnimations();
+                if (AOS.refreshHard) AOS.refreshHard();
+              }, 100);
+            }
+          };
+        }
+      }
+      
+      // Для мобильных устройств откладываем загрузку AOS
+      if (window.innerWidth <= 768) {
+        // Загружаем AOS при первом скролле
+        let aosLoaded = false;
+        function checkAOSLoad() {
+          if (aosLoaded) return;
+          aosLoaded = true;
+          loadAOS();
+          window.removeEventListener('scroll', checkAOSLoad);
+          window.removeEventListener('touchstart', checkAOSLoad);
+        }
+        window.addEventListener('scroll', checkAOSLoad, { passive: true, once: true });
+        window.addEventListener('touchstart', checkAOSLoad, { passive: true, once: true });
+        // Загружаем через 2 секунды если пользователь не скроллил
+        setTimeout(() => {
+          if (!aosLoaded) loadAOS();
+        }, 2000);
+      } else {
+        // Для десктопов загружаем сразу
+        loadAOS();
+      }
+    </script>
+    <script src="js/app.js" defer></script>
+    <script src="js/gallery.js" defer></script>
 
     <!-- Schema.org structured data -->
     <script type="application/ld+json">

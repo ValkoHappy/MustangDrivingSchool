@@ -93,6 +93,10 @@ body {
     color: var(--text-dark);
     background-color: var(--white);
     overflow-x: hidden;
+    /* Оптимизация для мобильных */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 img {
@@ -184,6 +188,19 @@ a {
         font-size: var(--fz-base);
         margin-top: -1rem;
         margin-bottom: 2rem;
+    }
+}
+
+/* Оптимизация производительности для мобильных */
+@media (max-width: 768px) {
+    /* Включаем оптимизации GPU для критичных элементов */
+    .hero,
+    .hero__image,
+    .hero__text,
+    [data-aos] {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
     }
 }
 

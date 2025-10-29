@@ -277,6 +277,8 @@
     align-items: center;
     overflow: hidden;
     padding-top: 70px;
+    /* Оптимизация для мобильных */
+    contain: layout style paint;
 }
 
 .hero__bg {
@@ -287,6 +289,9 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    /* Оптимизация для мобильных */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .hero__overlay {
