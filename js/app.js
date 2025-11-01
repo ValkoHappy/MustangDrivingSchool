@@ -136,6 +136,60 @@ function initMobileNav() {
     });
 }
 
+// Nav dropdown (desktop "Ещё")
+function initNavDropdown() {
+    const more = document.querySelector('.nav__more');
+    const trigger = more ? more.querySelector('.nav__more-trigger') : null;
+    const menu = more ? more.querySelector('.nav__more-menu') : null;
+    if (!more || !trigger || !menu) return;
+
+    let closeTimer;
+    const open = () => {
+        clearTimeout(closeTimer);
+        more.classList.add('is-open');
+        more.setAttribute('aria-expanded', 'true');
+    };
+    const close = (delay = 120) => {
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => {
+            more.classList.remove('is-open');
+            more.setAttribute('aria-expanded', 'false');
+        }, delay);
+    };
+
+    // Open on click
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = more.classList.contains('is-open');
+        if (isOpen) close(0); else open();
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!more.contains(e.target)) close();
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+    });
+
+    // Hover behavior on desktop only
+    const mq = window.matchMedia('(min-width: 1201px)');
+    const bindHover = () => {
+        if (mq.matches) {
+            more.addEventListener('mouseenter', open);
+            more.addEventListener('mouseleave', () => close());
+        } else {
+            more.removeEventListener('mouseenter', open);
+            more.removeEventListener('mouseleave', close);
+            close();
+        }
+    };
+    bindHover();
+    mq.addEventListener('change', bindHover);
+}
+
 // FAQ Accordion
 function initFAQ() {
     document.querySelectorAll('.faq-item__question').forEach(question => {
@@ -639,6 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Критические функции - загружаем сразу
     initMobileNav();
+    initNavDropdown();
     initFAQ();
     initModal();
     initForms();

@@ -23,6 +23,12 @@
     <meta name="geo.region" content="RU-ARK" />
     <meta name="geo.placename" content="Архангельск" />
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo1.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/logo1.png" />
+    <link rel="apple-touch-icon" href="assets/logo.png" />
+    <meta name="theme-color" content="#02BBD0" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mustang-driving.ru/" />
@@ -138,13 +144,25 @@
 
           <nav class="nav" id="nav">
             <a href="#about" class="nav__link">О школе</a>
-            <a href="#process" class="nav__link">Этапы обучения</a>
-            <a href="#benefits" class="nav__link">Преимущества</a>
             <a href="#fleet" class="nav__link">Автопарк</a>
             <a href="#pricing" class="nav__link">Цены</a>
             <a href="#reviews" class="nav__link">Отзывы</a>
-            <a href="#faq" class="nav__link">FAQ</a>
             <a href="#contact" class="nav__link">Контакты</a>
+            <!-- extra links (hidden on desktop; shown in mobile) -->
+            <a href="#process" class="nav__link nav__link--extra">Этапы обучения</a>
+            <a href="#gallery" class="nav__link nav__link--extra">Галерея</a>
+            <a href="#faq" class="nav__link nav__link--extra">FAQ</a>
+            <!-- desktop dropdown "more" (hidden on mobile) -->
+            <div class="nav__more" aria-haspopup="true" aria-expanded="false">
+              <button class="nav__more-trigger" type="button" aria-label="Ещё разделы">
+                Ещё <i class="fas fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="nav__more-menu" role="menu">
+                <a href="#process" class="nav__more-item" role="menuitem">Этапы обучения</a>
+                <a href="#gallery" class="nav__more-item" role="menuitem">Галерея</a>
+                <a href="#faq" class="nav__more-item" role="menuitem">FAQ</a>
+              </div>
+            </div>
           </nav>
 
           <div class="header__actions">
