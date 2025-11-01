@@ -329,3 +329,9 @@
     color: var(--text-gray);
     font-size: var(--fz-lg);
 }
+
+.gallery__cta-vk {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
