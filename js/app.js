@@ -43,8 +43,8 @@ function isLowEndDevice() {
 
 // Initialize AOS with reduced motion support
 function initAnimations() {
-    // Отключаем анимации на мобильных для лучшей производительности
-    const isMobile = window.innerWidth <= 768;
+    // Отключаем анимации на мобильных/планшетах для лучшей производительности
+    const isMobile = window.innerWidth <= 1024;
     const isLowEnd = isLowEndDevice();
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
@@ -75,14 +75,25 @@ function initAnimations() {
     // Для десктопов загружаем AOS как обычно
     if (typeof AOS !== 'undefined') {
         AOS.init({
-            once: true,
-            offset: 120,
-            duration: reduce ? 400 : 900,
+            once: true, // анимация один раз для предсказуемости
+            mirror: false, // не повторять при скролле вверх
+            anchorPlacement: 'top-bottom',
+            offset: 140,
+            duration: reduce ? 500 : 1200,
             easing: 'ease-out-cubic',
             disable: false,
+            delay: 50,
             startEvent: 'DOMContentLoaded'
         });
-        setTimeout(() => { if (AOS && AOS.refreshHard) AOS.refreshHard(); }, 400);
+        // Гарантируем корректную инициализацию для элементов уже в вьюпорте
+        setTimeout(() => {
+            if (AOS && AOS.refreshHard) AOS.refreshHard();
+            // Если мы вверху страницы, гарантированно показать хиро-элементы
+            if (window.scrollY <= 10) {
+                const heroEls = document.querySelectorAll('.hero [data-aos]');
+                heroEls.forEach((el, idx) => setTimeout(() => el.classList.add('aos-animate'), 60 * idx));
+            }
+        }, 350);
     } else {
         // Fallback: показать элементы без AOS
         const els = document.querySelectorAll('[data-aos]');
@@ -147,7 +158,8 @@ function initFAQ() {
             // Переключаем текущий элемент
             if (!isActive) {
                 item.classList.add('active');
-                answer.style.maxHeight = answer.scrollHeight + 'px';
+                // add a little extra space at the bottom so content isn't too close
+                answer.style.maxHeight = (answer.scrollHeight + 16) + 'px';
             } else {
                 item.classList.remove('active');
                 answer.style.maxHeight = null;

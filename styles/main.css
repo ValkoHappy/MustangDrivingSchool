@@ -158,6 +158,34 @@ a {
     .container { padding: 0 1.5rem; }
 }
 
+/* Отключение анимаций на планшетах для оптимизации */
+@media (max-width: 1024px) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    [data-aos],
+    [data-aos].aos-animate,
+    .aos-animate {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .hero__image,
+    .hero__image.aos-animate {
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
 /* Section Subtitle */
 .section__subtitle {
     font-size: var(--fz-lg);
