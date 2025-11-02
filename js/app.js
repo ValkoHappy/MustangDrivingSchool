@@ -700,6 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScroll();
     initBackToTop();
     initReviewsSlider(); // Инициализируем слайдер отзывов
+    initDocumentModal(); // Инициализируем модальное окно документов
     loadStartDate(); // Загружаем актуальную дату старта
 
     // Средней важности - загружаем с небольшой задержкой на мобильных
@@ -1013,4 +1014,76 @@ function initReviewsSlider() {
             }
         }, 100);
     }, 50);
+}
+
+// Initialize Document Modal
+function initDocumentModal() {
+    const modal = document.getElementById('documentModal');
+    const modalImage = modal.querySelector('.document-modal__image');
+    const modalClose = modal.querySelector('.document-modal__close');
+    const modalBackdrop = modal.querySelector('.document-modal__backdrop');
+    const zoomButtons = document.querySelectorAll('.document-card__zoom');
+    
+    if (!modal || !modalImage) return;
+    
+    function openModal(imageSrc, imageAlt) {
+        modalImage.src = imageSrc;
+        modalImage.alt = imageAlt;
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        // Небольшая задержка для плавного появления
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        // Убираем overflow после завершения анимации
+        setTimeout(() => {
+            document.body.style.overflow = '';
+        }, 300);
+    }
+    
+    // Открытие модального окна при клике на кнопку увеличения
+    zoomButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = button.closest('.document-card');
+            const img = card.querySelector('.document-card__image');
+            if (img) {
+                openModal(img.src, img.alt);
+            }
+        });
+    });
+    
+    // Также можно кликнуть на саму карточку для открытия
+    document.querySelectorAll('.document-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Игнорируем клики по кнопке (она уже обработана выше)
+            if (e.target.closest('.document-card__zoom')) return;
+            
+            const img = card.querySelector('.document-card__image');
+            if (img) {
+                openModal(img.src, img.alt);
+            }
+        });
+    });
+    
+    // Закрытие модального окна
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+    
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', closeModal);
+    }
+    
+    // Закрытие по ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
 }

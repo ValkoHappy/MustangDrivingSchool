@@ -928,6 +928,89 @@
     </div>
 </section>
 
+    <!-- Documents Section -->
+    <section class="section documents" id="documents">
+      <div class="container">
+        <h2 class="section__title" data-aos="fade-up">Наши документы</h2>
+        <p class="section__subtitle" data-aos="fade-up" data-aos-delay="100">
+          Вся необходимая документация подтверждает официальный статус автошколы
+        </p>
+        
+        <div class="documents__grid">
+          <div class="document-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="document-card__image-wrapper">
+              <img 
+                src="assets/doc/ЗаключениеГаи.jpg" 
+                alt="Заключение ГАИ о допуске к образовательной деятельности" 
+                class="document-card__image"
+                loading="lazy"
+              >
+              <div class="document-card__overlay">
+                <button class="document-card__zoom" aria-label="Увеличить документ">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="document-card__content">
+              <h3 class="document-card__title">Заключение ГАИ</h3>
+              <p class="document-card__description">Официальное разрешение на осуществление образовательной деятельности</p>
+            </div>
+          </div>
+
+          <div class="document-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="document-card__image-wrapper">
+              <img 
+                src="assets/doc/Лицензия.jpg" 
+                alt="Лицензия на образовательную деятельность" 
+                class="document-card__image"
+                loading="lazy"
+              >
+              <div class="document-card__overlay">
+                <button class="document-card__zoom" aria-label="Увеличить документ">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="document-card__content">
+              <h3 class="document-card__title">Лицензия</h3>
+              <p class="document-card__description">Лицензия на право ведения образовательной деятельности</p>
+            </div>
+          </div>
+
+          <div class="document-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="document-card__image-wrapper">
+              <img 
+                src="assets/doc/сэс.jpg" 
+                alt="Заключение СЭС о соответствии классов санитарным нормам" 
+                class="document-card__image"
+                loading="lazy"
+              >
+              <div class="document-card__overlay">
+                <button class="document-card__zoom" aria-label="Увеличить документ">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="document-card__content">
+              <h3 class="document-card__title">Заключение СЭС</h3>
+              <p class="document-card__description">Подтверждение соответствия учебных классов санитарным нормам</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Document Modal -->
+    <div class="document-modal" id="documentModal" aria-hidden="true">
+      <div class="document-modal__backdrop"></div>
+      <div class="document-modal__container">
+        <button class="document-modal__close" aria-label="Закрыть">
+          <i class="fas fa-times"></i>
+        </button>
+        <img class="document-modal__image" src="" alt="Документ">
+      </div>
+    </div>
+
     <!-- FAQ Section -->
     <section class="section faq" id="faq">
       <div class="container">
@@ -1175,22 +1258,18 @@
             </div>
           </div>
 
-          <div class="footer__section">
-            <h3 class="footer__title">Документы</h3>
-            <div class="footer__documents">
-              <a href="#" class="footer__document">Лицензия №6527</a>
-              <a href="#" class="footer__document">Программа обучения</a>
-              <a href="#" class="footer__document">Договор-оферта</a>
-              <a href="#" class="footer__document"
-                >Политика конфиденциальности</a
-              >
-            </div>
-          </div>
         </div>
 
         <div class="footer__bottom">
-          <p>&copy; 2023 Автошкола «Мустанг». Все права защищены. Директор: Микуров Алексей Николаевич</p>
-          <p>ОГРН 1152901012417, ИНН/КПП 2901263464/290101001</p>
+          <div class="footer__bottom-content">
+            <div class="footer__bottom-text">
+              <p>&copy; 2023 Автошкола «Мустанг». Все права защищены. Директор: Микуров Алексей Николаевич</p>
+              <p>ОГРН 1152901012417, ИНН/КПП 2901263464/290101001</p>
+            </div>
+            <div class="footer__legal-links">
+              <a href="privacy.html" class="footer__legal-link">Политика конфиденциальности</a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
