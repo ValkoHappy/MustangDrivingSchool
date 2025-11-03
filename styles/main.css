@@ -99,6 +99,21 @@ body {
     text-rendering: optimizeLegibility;
 }
 
+/* AOS initialization fix - скрываем элементы до инициализации только на десктопе */
+@media (min-width: 769px) {
+    [data-aos]:not(.aos-animate):not(.no-animation) {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    
+    /* Показываем элементы после инициализации AOS */
+    [data-aos].aos-animate {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
 img {
     max-width: 100%;
     height: auto;

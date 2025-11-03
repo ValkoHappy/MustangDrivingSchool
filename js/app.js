@@ -75,8 +75,8 @@ function initAnimations() {
     // Для десктопов загружаем AOS как обычно
     if (typeof AOS !== 'undefined') {
         AOS.init({
-            once: true, // анимация один раз для предсказуемости
-            mirror: false, // не повторять при скролле вверх
+            once: false, // разрешаем повтор при скролле вверх
+            mirror: true, // повторять анимации при скролле вверх
             anchorPlacement: 'top-bottom',
             offset: 140,
             duration: reduce ? 500 : 1200,
@@ -85,15 +85,44 @@ function initAnimations() {
             delay: 50,
             startEvent: 'DOMContentLoaded'
         });
-        // Гарантируем корректную инициализацию для элементов уже в вьюпорте
-        setTimeout(() => {
-            if (AOS && AOS.refreshHard) AOS.refreshHard();
-            // Если мы вверху страницы, гарантированно показать хиро-элементы
-            if (window.scrollY <= 10) {
-                const heroEls = document.querySelectorAll('.hero [data-aos]');
-                heroEls.forEach((el, idx) => setTimeout(() => el.classList.add('aos-animate'), 60 * idx));
+        
+        // Важно: дожидаемся полной инициализации
+        requestAnimationFrame(() => {
+            if (AOS && AOS.refresh) {
+                AOS.refresh();
             }
-        }, 350);
+            // Принудительно обрабатываем элементы в viewport
+            requestAnimationFrame(() => {
+                if (AOS && AOS.refreshHard) {
+                    AOS.refreshHard();
+                }
+                // Если мы вверху страницы, гарантированно показать хиро-элементы
+                if (window.scrollY <= 10) {
+                    const heroEls = document.querySelectorAll('.hero [data-aos]');
+                    heroEls.forEach((el) => {
+                        // Проверяем видимость элемента
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            // Элемент виден, добавляем класс если его еще нет
+                            if (!el.classList.contains('aos-animate')) {
+                                el.classList.add('aos-animate');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Обработка скролла для гарантированного обновления при скролле вверх
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (AOS && AOS.refresh) {
+                    AOS.refresh();
+                }
+            }, 150);
+        }, { passive: true });
     } else {
         // Fallback: показать элементы без AOS
         const els = document.querySelectorAll('[data-aos]');
@@ -706,12 +735,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Средней важности - загружаем с небольшой задержкой на мобильных
     // НО на мобильных initAnimations уже не нужна, т.к. элементы показываются сразу
     if (!isMobile) {
-        setTimeout(() => {
-            initAnimations();
-            if (typeof AOS === "undefined") { 
-                setTimeout(enforceOnScrollAnimations, 300); 
-            }
-        }, 0);
+        // Ждем загрузки AOS если он еще не загружен
+        if (typeof AOS !== 'undefined') {
+            // AOS уже загружен, инициализируем сразу
+            setTimeout(initAnimations, 100);
+        } else if (window.AOS_LOADED) {
+            // AOS уже загружен (было установлено через событие)
+            setTimeout(initAnimations, 100);
+        } else {
+            // Ждем события загрузки AOS
+            window.addEventListener('aos-loaded', () => {
+                setTimeout(initAnimations, 100);
+            }, { once: true });
+            
+            // Fallback: если через 2 секунды AOS не загрузился
+            setTimeout(() => {
+                if (typeof AOS === 'undefined') {
+                    console.warn('AOS не загрузился, используем fallback');
+                    // Показываем все элементы если AOS не загрузился
+                    const allAosEls = document.querySelectorAll('[data-aos]');
+                    allAosEls.forEach(el => {
+                        el.classList.add('aos-animate');
+                        el.style.opacity = '1';
+                        el.style.visibility = 'visible';
+                    });
+                    enforceOnScrollAnimations();
+                } else {
+                    initAnimations();
+                }
+            }, 2000);
+        }
     } else {
         // На мобильных сразу показываем все элементы
         const aosElements = document.querySelectorAll('[data-aos]');

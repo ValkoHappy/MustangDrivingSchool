@@ -27,16 +27,14 @@ class Gallery {
     
     loadImages() {
         this.images = [
-            { src: 'assets/gallery/photo1.jpg', alt: 'Выпуск 2024 года' },
-            { src: 'assets/gallery/photo2.jpg', alt: 'Торжественное вручение прав' },
-            { src: 'assets/gallery/photo3.jpg', alt: 'Групповое фото выпускников' },
-            { src: 'assets/gallery/photo4.jpg', alt: 'Инструкторы с выпускниками' },
-            { src: 'assets/gallery/photo5.jpg', alt: 'Праздничный выпускной' },
-            { src: 'assets/gallery/photo6.jpg', alt: 'Успешная сдача экзамена' },
-            { src: 'assets/gallery/photo6.jpg', alt: 'Выпускники с правами' },
-            { src: 'assets/gallery/photo6.jpg', alt: 'Фото на память' },
-            { src: 'assets/gallery/photo6.jpg', alt: 'Радостные моменты' },
-            { src: 'assets/gallery/photo6.jpg', alt: 'Завершение обучения' }
+            { src: 'assets/gallery/photo1.jpg', alt: 'Выпускники автошколы Мустанг в Архангельске 2024 года' },
+            { src: 'assets/gallery/photo2.jpg', alt: 'Торжественное вручение водительских прав выпускникам автошколы Архангельска' },
+            { src: 'assets/gallery/photo3.jpg', alt: 'Групповое фото выпускников автошколы Мустанг в Архангельске' },
+            { src: 'assets/gallery/photo4.jpg', alt: 'Инструкторы автошколы Мустанг с выпускниками в Архангельске' },
+            { src: 'assets/gallery/photo5.jpg', alt: 'Праздничный выпускной в автошколе Архангельска' },
+            { src: 'assets/gallery/photo6.jpg', alt: 'Успешная сдача экзамена в ГИБДД выпускниками автошколы Мустанг' },
+            { src: 'assets/gallery/photo7.jpg', alt: 'Выпускники автошколы в Архангельске с водительскими правами' },
+            { src: 'assets/gallery/photo8.jpg', alt: 'Фото выпускников автошколы Мустанг в Архангельске на память' },
         ];
     }
     

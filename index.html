@@ -8,14 +8,14 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
-    <title>Автошкола «Мустанг» — уверенное вождение с первого занятия</title>
+    <title>Автошкола Архангельск — Автошкола Мустанг | Цены на обучение, отзывы, рейтинг</title>
     <meta
       name="description"
-      content="Автошкола Мустанг в Архангельске. Категория B, рассрочка 0%, современные авто, опытные инструкторы. 2500+ выпускников, 92% сдают с первого раза."
+      content="Автошкола Мустанг в Архангельске — цены на обучение, отзывы учеников, высокий рейтинг. Категория B, АКПП и МКПП, рассрочка 0%. Официальный сайт автошколы. 2500+ выпускников, 92% сдают с первого раза."
     />
     <meta
       name="keywords"
-      content="автошкола, автошкола Архангельск, курсы вождения, права категории B, обучение вождению, инструктор по вождению, АКПП, МКПП, автошкола Мустанг"
+      content="автошкола архангельск, автошкола архангельск цены, автошкола архангельск цены на обучение, автошколы архангельска рейтинг, автошколы архангельска отзывы, автошкола мустанг архангельск, автошкола архангельск официальный сайт, автошкола в архангельске, обучение вождению архангельск, автошкола архангельск категория в"
     />
     <meta name="author" content="Автошкола Мустанг" />
     <meta name="robots" content="index, follow" />
@@ -51,6 +51,10 @@
     />
     <meta property="twitter:image" content="https://mustang-driving.ru/assets/og-image.jpg" />
 
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/mustang.png" as="image" fetchpriority="high" />
+    <link rel="preload" href="styles/main.css" as="style" />
+    
     <!-- Fonts - оптимизация для мобильных -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -87,10 +91,11 @@
       <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     </noscript>
 
-    <!-- Styles -->
+    <!-- Styles - inline critical CSS for above-the-fold content -->
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/components.css" />
-    <link rel="stylesheet" href="styles/gallery.css" />
+    <link rel="stylesheet" href="styles/gallery.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="styles/gallery.css" /></noscript>
 
     <!-- Yandex Maps API - отложенная загрузка для мобильных -->
     <script>
@@ -135,10 +140,12 @@
       <div class="container">
         <div class="header__inner">
           <a href="#home" class="logo">
-            <img
+              <img
               src="assets/logo8.png"
               alt="Автошкола Мустанг"
               class="logo__image"
+              width="180"
+              height="50"
             />
           </a>
 
@@ -208,8 +215,8 @@
             </h1>
 
             <p class="hero__description">
-              Категория B, современные авто, опытные инструкторы.
-              Более 250 выпускников получили права с нашей помощью!
+              Автошкола в Архангельске с высоким рейтингом. Категория B, современные авто, опытные инструкторы.
+              Более 2500 выпускников получили права с нашей помощью!
             </p>
 
             <div class="hero__actions">
@@ -248,7 +255,10 @@
               src="assets/mustang.png"
               alt="Автомобиль Mustang"
               class="hero__image"
+              width="800"
+              height="600"
               loading="eager"
+              fetchpriority="high"
               data-aos="custom-car-in"
               data-aos-duration="900"
               data-aos-delay="550"
@@ -269,7 +279,7 @@
         <div class="about__main">
             <div class="about__visual" data-aos="fade-right">
                 <div class="about__image-wrapper">
-                    <img src="assets/about-main.jpg" alt="Учебный класс автошколы" class="about__image" loading="lazy">
+                    <img src="assets/about-main.jpg" alt="Учебный класс автошколы" class="about__image" width="600" height="400" loading="lazy">
                 </div>
             </div>
             
@@ -277,9 +287,9 @@
                 <div class="about__text">
                     <p class="about__lead">Хотите водить машину, но боитесь? Наши специалисты помогут справиться со стрессом и пройти весь путь к водительскому удостоверению.</p>
                     
-                    <p class="about__description">Автошкола «Мустанг» — это уверенное вождение с первых километров. Мы обучаем по программам профессионального обучения водителей категории «В».</p>
+                    <p class="about__description">Автошкола «Мустанг» в Архангельске — это уверенное вождение с первых километров. Мы обучаем по программам профессионального обучения водителей категории «В». Автошкола в Архангельске с высоким рейтингом по отзывам учеников.</p>
                     
-                    <p class="about__description">Теорию можно пройти онлайн, а для практических занятий подберем удобный индивидуальный график. Гарантируем качественную подготовку без скрытых платежей.</p>
+                    <p class="about__description">Теорию можно пройти онлайн, а для практических занятий подберем удобный индивидуальный график. Гарантируем качественную подготовку без скрытых платежей. Лучшие цены на обучение в автошколе Архангельска с гибкими условиями рассрочки.</p>
                 </div>
             </div>
         </div>
@@ -436,7 +446,7 @@
             </div>
             <h3 class="benefit-card__title">Современный автопарк</h3>
             <p class="benefit-card__text">
-              Новые автомобили 2022-2023 года выпуска с кондиционером
+              Современные автомобили 2022-2023 года выпуска
             </p>
           </div>
 
@@ -493,15 +503,13 @@
               <div class="fleet-card fleet-card--horizontal">
                 <div class="fleet-card__badge">АКПП</div>
                 <div class="fleet-card__image-large">
-                  <img src="assets/HyundaiSolaris1.png" alt="Hyundai Solaris АКПП" loading="lazy" />
+                  <img src="assets/HyundaiSolaris1.png" alt="Hyundai Solaris АКПП" width="400" height="280" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Hyundai Solaris</h4>
                   <p class="fleet-card__description">Комфортный седан с автоматической коробкой передач</p>
                   <ul class="fleet-card__features">
                     <li><i class="fas fa-check-circle"></i> Автоматическая КПП</li>
-                    <li><i class="fas fa-check-circle"></i> Кондиционер</li>
-                    <li><i class="fas fa-check-circle"></i> Парктроник</li>
                     <li><i class="fas fa-check-circle"></i> 2023 год</li>
                   </ul>
                 </div>
@@ -510,15 +518,13 @@
               <div class="fleet-card fleet-card--horizontal">
                 <div class="fleet-card__badge">АКПП</div>
                 <div class="fleet-card__image-large">
-                  <img src="assets/OmodaC5.png" alt="Omoda C5" loading="lazy" />
+                  <img src="assets/OmodaC5.png" alt="Omoda C5" width="400" height="280" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Omoda C5</h4>
                   <p class="fleet-card__description">Современный кроссовер с продвинутыми системами безопасности</p>
                   <ul class="fleet-card__features">
                     <li><i class="fas fa-check-circle"></i> Автоматическая КПП</li>
-                    <li><i class="fas fa-check-circle"></i> Климат-контроль</li>
-                    <li><i class="fas fa-check-circle"></i> Камера заднего вида</li>
                     <li><i class="fas fa-check-circle"></i> 2023 год</li>
                   </ul>
                 </div>
@@ -537,15 +543,13 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/RenaultDuster.png" alt="Renault Duster" loading="lazy" />
+                  <img src="assets/RenaultDuster.png" alt="Renault Duster" width="400" height="280" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Renault Duster</h4>
                   <p class="fleet-card__description">Надёжный кроссовер для уверенного вождения</p>
                   <ul class="fleet-card__features">
                     <li><i class="fas fa-check-circle"></i> Механическая КПП</li>
-                    <li><i class="fas fa-check-circle"></i> Кондиционер</li>
-                    <li><i class="fas fa-check-circle"></i> ABS, ESP</li>
                     <li><i class="fas fa-check-circle"></i> 2022 год</li>
                   </ul>
                 </div>
@@ -554,15 +558,13 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/HyundaiSolaris.png" alt="Hyundai Solaris МКПП" loading="lazy" />
+                  <img src="assets/HyundaiSolaris.png" alt="Hyundai Solaris МКПП" width="400" height="280" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Hyundai Solaris</h4>
                   <p class="fleet-card__description">Популярный седан для обучения на механике</p>
                   <ul class="fleet-card__features">
                     <li><i class="fas fa-check-circle"></i> Механическая КПП</li>
-                    <li><i class="fas fa-check-circle"></i> Кондиционер</li>
-                    <li><i class="fas fa-check-circle"></i> Парктроник</li>
                     <li><i class="fas fa-check-circle"></i> 2022 год</li>
                   </ul>
                 </div>
@@ -571,15 +573,13 @@
               <div class="fleet-card">
                 <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
                 <div class="fleet-card__image">
-                  <img src="assets/LadaGranta.png" alt="Lada Granta" loading="lazy" />
+                  <img src="assets/LadaGranta.png" alt="Lada Granta" width="400" height="280" loading="lazy" />
                 </div>
                 <div class="fleet-card__content">
                   <h4 class="fleet-card__title">Lada Granta</h4>
                   <p class="fleet-card__description">Доступный и надёжный автомобиль</p>
                   <ul class="fleet-card__features">
                     <li><i class="fas fa-check-circle"></i> Механическая КПП</li>
-                    <li><i class="fas fa-check-circle"></i> Кондиционер</li>
-                    <li><i class="fas fa-check-circle"></i> ABS</li>
                     <li><i class="fas fa-check-circle"></i> 2022 год</li>
                   </ul>
                 </div>
@@ -595,7 +595,7 @@
       <div class="container">
         <h2 class="section__title" data-aos="fade-up">Наши услуги</h2>
         <p class="section__subtitle" data-aos="fade-up" data-aos-delay="100">
-          Выбирайте подходящий формат обучения
+          Актуальные цены на обучение в автошколе Архангельска. Выбирайте подходящий формат обучения
         </p>
         <div class="pricing__grid">
           <!-- Теоретический курс -->
@@ -664,7 +664,7 @@
       <div class="container">
         <h2 class="section__title" data-aos="fade-up">Отзывы учеников</h2>
         <p class="section__subtitle" data-aos="fade-up" data-aos-delay="100">
-          Более 92% наших учеников сдают экзамены с первого раза
+          Отзывы об автошколе Архангельска. Реальный рейтинг автошколы Мустанг — 92% наших учеников сдают экзамены с первого раза
         </p>
 
         <div class="reviews__slider-wrapper">
@@ -888,35 +888,35 @@
         
         <div class="gallery__grid">
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
-                <img src="assets/gallery/photo1.jpg" alt="Выпуск 2024 года" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo1.jpg" alt="Выпускники автошколы Мустанг в Архангельске 2024 года" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="150">
-                <img src="assets/gallery/photo2.jpg" alt="Торжественное вручение прав" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo2.jpg" alt="Торжественное вручение водительских прав выпускникам автошколы Архангельска" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
-                <img src="assets/gallery/photo3.jpg" alt="Групповое фото выпускников" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo3.jpg" alt="Групповое фото выпускников автошколы Мустанг в Архангельске" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="250">
-                <img src="assets/gallery/photo4.jpg" alt="Инструкторы с выпускниками" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo4.jpg" alt="Инструкторы автошколы Мустанг с выпускниками в Архангельске" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
-                <img src="assets/gallery/photo5.jpg" alt="Праздничный выпускной" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo5.jpg" alt="Праздничный выпускной в автошколе Архангельска" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="350">
-                <img src="assets/gallery/photo6.jpg" alt="Успешная сдача экзамена" class="gallery-item__image" loading="lazy">
+                <img src="assets/gallery/photo6.jpg" alt="Успешная сдача экзамена в ГИБДД выпускниками автошколы Мустанг" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="400">
-                <img src="assets/gallery/photo6.jpg" alt="Выпускники с правами" class="gallery-item__image">
+                <img src="assets/gallery/photo7.jpg" alt="Выпускники автошколы в Архангельске с водительскими правами" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
             
             <div class="gallery-item" data-aos="fade-up" data-aos-delay="450">
-                <img src="assets/gallery/photo6.jpg" alt="Фото на память" class="gallery-item__image">
+                <img src="assets/gallery/photo8.jpg" alt="Фото выпускников автошколы Мустанг в Архангельске на память" class="gallery-item__image" width="400" height="300" loading="lazy">
             </div>
         </div>
 
@@ -943,6 +943,8 @@
                 src="assets/doc/ЗаключениеГаи.jpg" 
                 alt="Заключение ГАИ о допуске к образовательной деятельности" 
                 class="document-card__image"
+                width="600"
+                height="400"
                 loading="lazy"
               >
               <div class="document-card__overlay">
@@ -963,6 +965,8 @@
                 src="assets/doc/Лицензия.jpg" 
                 alt="Лицензия на образовательную деятельность" 
                 class="document-card__image"
+                width="600"
+                height="400"
                 loading="lazy"
               >
               <div class="document-card__overlay">
@@ -983,6 +987,8 @@
                 src="assets/doc/сэс.jpg" 
                 alt="Заключение СЭС о соответствии классов санитарным нормам" 
                 class="document-card__image"
+                width="600"
+                height="400"
                 loading="lazy"
               >
               <div class="document-card__overlay">
@@ -1216,6 +1222,8 @@
                 src="assets/logo8.png"
                 alt="Автошкола Мустанг"
                 class="footer__logo-image"
+                width="180"
+                height="50"
               />
             </div>
             <p class="footer__description">
@@ -1390,6 +1398,13 @@
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/aos@next/dist/aos.js';
         script.async = true;
+        // Ждем загрузки AOS перед инициализацией
+        script.onload = function() {
+          // Сигнализируем что AOS загружен
+          window.AOS_LOADED = true;
+          // Запускаем событие для app.js
+          window.dispatchEvent(new Event('aos-loaded'));
+        };
         document.body.appendChild(script);
       } else {
         // На мобильных сразу добавляем класс aos-animate всем элементам
