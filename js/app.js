@@ -75,15 +75,46 @@ function initAnimations() {
     // Для десктопов загружаем AOS как обычно
     if (typeof AOS !== 'undefined') {
         AOS.init({
-            once: false, // разрешаем повтор при скролле вверх
-            mirror: true, // повторять анимации при скролле вверх
+            once: true, // анимация только один раз
+            mirror: false, // не повторять при скролле
             anchorPlacement: 'top-bottom',
-            offset: 140,
+            offset: 200, // увеличиваем offset чтобы элементы точно были в экране
             duration: reduce ? 500 : 1200,
             easing: 'ease-out-cubic',
             disable: false,
             delay: 50,
             startEvent: 'DOMContentLoaded'
+        });
+        
+        // Перехватываем события AOS чтобы помечать элементы как уже анимированные
+        document.addEventListener('aos:in', (e) => {
+            const el = e.target || e.detail;
+            if (el && !el.hasAttribute('data-aos-animated')) {
+                el.setAttribute('data-aos-animated', 'true');
+            }
+        }, { passive: true });
+        
+        // Защита: предотвращаем снятие класса aos-animate у элементов которые уже анимированы
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const el = mutation.target;
+                    if (el.hasAttribute('data-aos-animated') && !el.classList.contains('aos-animate')) {
+                        // Восстанавливаем класс если он был удален
+                        el.classList.add('aos-animate');
+                    }
+                }
+            });
+        });
+        
+        // Наблюдаем за всеми элементами с data-aos
+        requestAnimationFrame(() => {
+            document.querySelectorAll('[data-aos]').forEach(el => {
+                observer.observe(el, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            });
         });
         
         // Важно: дожидаемся полной инициализации
@@ -106,38 +137,44 @@ function initAnimations() {
                             // Элемент виден, добавляем класс если его еще нет
                             if (!el.classList.contains('aos-animate')) {
                                 el.classList.add('aos-animate');
+                                el.setAttribute('data-aos-animated', 'true');
                             }
                         }
                     });
                 }
+                
+                // Помечаем все элементы которые уже анимированы, чтобы AOS их не трогал
+                const allAosEls = document.querySelectorAll('[data-aos].aos-animate');
+                allAosEls.forEach(el => {
+                    if (!el.hasAttribute('data-aos-animated')) {
+                        el.setAttribute('data-aos-animated', 'true');
+                    }
+                });
             });
         });
-        
-        // Обработка скролла для гарантированного обновления при скролле вверх
-        let scrollTimeout;
-        window.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                if (AOS && AOS.refresh) {
-                    AOS.refresh();
-                }
-            }, 150);
-        }, { passive: true });
     } else {
         // Fallback: показать элементы без AOS
         const els = document.querySelectorAll('[data-aos]');
         if ('IntersectionObserver' in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting) {
+                    if (e.isIntersecting && !e.target.hasAttribute('data-aos-animated')) {
                         e.target.classList.add('aos-animate');
+                        e.target.setAttribute('data-aos-animated', 'true');
                         io.unobserve(e.target);
                     }
                 });
             }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-            els.forEach(el => io.observe(el));
+            els.forEach(el => {
+                if (!el.hasAttribute('data-aos-animated')) {
+                    io.observe(el);
+                }
+            });
         } else {
-            els.forEach(el => el.classList.add('aos-animate'));
+            els.forEach(el => {
+                el.classList.add('aos-animate');
+                el.setAttribute('data-aos-animated', 'true');
+            });
         }
     }
 }
@@ -251,7 +288,7 @@ function initFAQ() {
     });
 }
 
-// Ensure reveal animations trigger only when elements enter viewport
+// Ensure reveal animations trigger only when elements enter viewport - ОДИН РАЗ
 function enforceOnScrollAnimations() {
     const elements = Array.from(document.querySelectorAll('[data-aos]'));
     if (!elements.length) return;
@@ -261,21 +298,29 @@ function enforceOnScrollAnimations() {
         return r.top < window.innerHeight * 0.85 && r.bottom > 0;
     };
 
-    // Применяем анимацию к элементам, которые уже в зоне видимости
-    elements.forEach(el => { if (inView(el)) { el.classList.add('aos-animate'); } });
+    // Применяем анимацию к элементам, которые уже в зоне видимости - ТОЛЬКО ОДИН РАЗ
+    elements.forEach(el => { 
+        if (inView(el) && !el.classList.contains('aos-animate')) { 
+            el.classList.add('aos-animate');
+            // Помечаем что анимация уже применена, чтобы не повторять
+            el.setAttribute('data-aos-animated', 'true');
+        } 
+    });
 
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
-                if (e.isIntersecting && !e.target.classList.contains('aos-animate')) {
+                // Добавляем класс только если его еще нет и элемент еще не был анимирован
+                if (e.isIntersecting && !e.target.classList.contains('aos-animate') && !e.target.hasAttribute('data-aos-animated')) {
                     e.target.classList.add('aos-animate');
+                    e.target.setAttribute('data-aos-animated', 'true');
                     io.unobserve(e.target);
                 }
             });
         }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
         elements.forEach(el => {
             // Наблюдаем только за элементами, которые еще не анимированы
-            if (!el.classList.contains('aos-animate')) {
+            if (!el.classList.contains('aos-animate') && !el.hasAttribute('data-aos-animated')) {
                 io.observe(el);
             }
         });
@@ -756,6 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const allAosEls = document.querySelectorAll('[data-aos]');
                     allAosEls.forEach(el => {
                         el.classList.add('aos-animate');
+                        el.setAttribute('data-aos-animated', 'true');
                         el.style.opacity = '1';
                         el.style.visibility = 'visible';
                     });
@@ -770,6 +816,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const aosElements = document.querySelectorAll('[data-aos]');
         aosElements.forEach(el => {
             el.classList.add('aos-animate');
+            el.setAttribute('data-aos-animated', 'true');
             el.style.opacity = '1';
             el.style.transform = 'none';
         });

@@ -107,10 +107,17 @@ body {
         transition: opacity 0.6s ease, visibility 0.6s ease;
     }
     
-    /* Показываем элементы после инициализации AOS */
-    [data-aos].aos-animate {
+    /* Показываем элементы после инициализации AOS - навсегда, без возможности повторной анимации */
+    [data-aos].aos-animate,
+    [data-aos][data-aos-animated] {
         opacity: 1 !important;
         visibility: visible !important;
+        pointer-events: auto;
+    }
+    
+    /* Предотвращаем AOS от снятия класса aos-animate */
+    [data-aos].aos-animate[data-aos-animated] {
+        /* Дополнительная защита - класс остается навсегда */
     }
 }
 
