@@ -4,31 +4,46 @@
     padding: 5rem 0;
 }
 
-.gallery__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Уменьшил до 3 колонок для больших фото */
-    gap: 1.5rem; /* Увеличил отступы */
-    margin-bottom: 3rem;
-    justify-items: center; /* Центрируем все элементы */
+.gallery__slider-wrapper {
+    position: relative;
+    margin-top: 3rem;
 }
 
-.gallery-item {
+.gallery__slider {
+    overflow: hidden; /* Скрываем частичные изображения */
+    position: relative;
+    width: 100%;
+    padding: 4rem 1.5rem 3rem; /* Очень большой padding сверху и снизу для теней */
+}
+
+.gallery__track {
+    display: flex;
+    gap: 2rem;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    align-items: stretch;
+    padding: 0; /* Padding уже на slider */
+}
+
+.gallery__track .gallery-item {
+    min-width: calc((100% - 6rem) / 4); /* 4 картинки: 100% минус 3 gap по 2rem */
+    width: calc((100% - 6rem) / 4);
+    max-width: calc((100% - 6rem) / 4);
+    flex-shrink: 0;
+    flex-grow: 0;
+    box-sizing: border-box;
     position: relative;
     border-radius: var(--radius-xl);
     overflow: hidden;
     cursor: pointer;
     transition: all var(--t-med) var(--ease);
-    box-shadow: var(--shadow-lg); /* Более выраженная тень */
+    box-shadow: var(--shadow-lg);
     background: var(--gray-light);
-    aspect-ratio: 4/3; /* Более квадратный формат */
-    width: 100%;
-    max-width: 400px; /* Ограничиваем максимальную ширину */
-    height: 400px;
-    margin: 0 auto; /* Центрируем каждый элемент */
+    aspect-ratio: 4/3;
 }
 
-.gallery-item:hover {
-    transform: translateY(-12px) scale(1.02); /* Более выраженный ховер */
+.gallery__track .gallery-item:hover {
+    transform: translateY(-8px) scale(1.02);
     box-shadow: var(--shadow-primary);
 }
 
@@ -37,10 +52,75 @@
     height: 100%;
     object-fit: cover;
     transition: transform var(--t-slow) var(--ease);
+    display: block;
+    background: var(--gray-light);
 }
 
 .gallery-item:hover .gallery-item__image {
-    transform: scale(1.1); /* Увеличил масштаб при ховере */
+    transform: scale(1.1);
+}
+
+.gallery__navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2.5rem;
+}
+
+.gallery__nav-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: var(--white);
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--t-fast) var(--ease);
+    font-size: 1.125rem;
+}
+
+.gallery__nav-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: var(--white);
+    transform: scale(1.1);
+}
+
+.gallery__nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.gallery__dots {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border-light);
+    cursor: pointer;
+    transition: all var(--t-fast) var(--ease);
+    padding: 0;
+}
+
+.gallery__dot:hover {
+    background: var(--primary);
+    transform: scale(1.2);
+}
+
+.gallery__dot--active {
+    background: var(--primary);
+    width: 30px;
+    border-radius: 5px;
 }
 
 /* Lightbox Modal */
@@ -193,25 +273,43 @@
 
 /* Адаптивность */
 @media (max-width: 1200px) {
-    .gallery__grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
+    .gallery__track .gallery-item {
+        min-width: calc((100% - 4rem) / 3); /* 3 картинки: 100% минус 2 gap по 2rem */
+        width: calc((100% - 4rem) / 3);
+        max-width: calc((100% - 4rem) / 3);
     }
     
-    .gallery-item {
-        max-width: 350px;
+    .gallery__slider {
+        padding: 4rem 1.5rem 3rem;
+    }
+    
+    .gallery__track {
+        gap: 2rem;
     }
 }
 
 @media (max-width: 1024px) {
-    .gallery__grid {
-        grid-template-columns: repeat(2, 1fr);
+    .gallery__slider {
+        padding: 4rem 1.5rem 3rem;
+    }
+    
+    .gallery__track .gallery-item {
+        min-width: calc((100% - 2rem) / 2); /* 2 картинки: 100% минус 1 gap по 2rem */
+        width: calc((100% - 2rem) / 2);
+        max-width: calc((100% - 2rem) / 2);
+    }
+    
+    .gallery__track {
+        gap: 2rem;
+    }
+    
+    .gallery__navigation {
         gap: 1.5rem;
     }
     
-    .gallery-item {
-        max-width: 400px;
-        aspect-ratio: 1/1; /* Квадратные на планшетах */
+    .gallery__nav-btn {
+        width: 45px;
+        height: 45px;
     }
 }
 
@@ -220,16 +318,28 @@
         padding: 3rem 0;
     }
     
-    .gallery__grid {
-        grid-template-columns: 1fr; /* Одна колонка на мобильных */
-        gap: 1.5rem;
-        max-width: 500px;
-        margin: 0 auto 3rem;
+    .gallery__track .gallery-item {
+        min-width: 100%; /* 1 картинка на всю ширину */
+        width: 100%;
+        max-width: 100%;
     }
     
-    .gallery-item {
-        max-width: 100%;
-        aspect-ratio: 4/3;
+    .gallery__slider {
+        padding: 4rem 1rem 3rem;
+    }
+    
+    .gallery__track {
+        gap: 1.5rem;
+    }
+    
+    .gallery__navigation {
+        gap: 1rem;
+    }
+    
+    .gallery__nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
     
     .lightbox__content {

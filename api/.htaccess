@@ -1,0 +1,11 @@
+# Разрешаем выполнение PHP файлов
+<IfModule mod_php.c>
+    php_flag engine on
+</IfModule>
+
+# Разрешаем доступ к PHP файлам
+<FilesMatch "\.php$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+

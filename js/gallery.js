@@ -128,9 +128,9 @@ class Gallery {
         document.addEventListener('mouseup', this.endDrag.bind(this));
         
         // Touch events - ТОЛЬКО на изображении
-        this.lightboxImage.addEventListener('touchstart', this.startDrag.bind(this));
-        document.addEventListener('touchmove', this.drag.bind(this));
-        document.addEventListener('touchend', this.endDrag.bind(this));
+        this.lightboxImage.addEventListener('touchstart', this.startDrag.bind(this), { passive: true });
+        document.addEventListener('touchmove', this.drag.bind(this), { passive: true });
+        document.addEventListener('touchend', this.endDrag.bind(this), { passive: true });
     }
     
     startDrag(e) {

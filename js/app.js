@@ -88,9 +88,52 @@ function initAnimations() {
         
         // Перехватываем события AOS чтобы помечать элементы как уже анимированные
         document.addEventListener('aos:in', (e) => {
-            const el = e.target || e.detail;
-            if (el && !el.hasAttribute('data-aos-animated')) {
-                el.setAttribute('data-aos-animated', 'true');
+            try {
+                if (!e) return;
+                
+                // AOS передает элемент через e.target или e.detail
+                let el = null;
+                
+                // Пробуем получить элемент из разных источников с проверкой
+                if (e.target && e.target.nodeType === 1) {
+                    el = e.target;
+                } else if (e.detail && e.detail.nodeType === 1) {
+                    el = e.detail;
+                } else if (e.target) {
+                    el = e.target;
+                } else if (e.detail) {
+                    el = e.detail;
+                }
+                
+                // Безопасная проверка: используем in оператор и проверяем наличие методов
+                if (el && 
+                    typeof el === 'object' && 
+                    el.nodeType === 1 &&
+                    'hasAttribute' in el && 
+                    'setAttribute' in el) {
+                    try {
+                        // Дополнительная проверка перед вызовом hasAttribute
+                        // Проверяем что методы действительно функции перед вызовом
+                        const hasAttr = el.hasAttribute;
+                        const setAttr = el.setAttribute;
+                        
+                        if (typeof hasAttr === 'function' && typeof setAttr === 'function') {
+                            try {
+                                // Проверяем наличие атрибута безопасно
+                                const hasAnimated = hasAttr.call(el, 'data-aos-animated');
+                                if (!hasAnimated) {
+                                    setAttr.call(el, 'data-aos-animated', 'true');
+                                }
+                            } catch (callError) {
+                                // Игнорируем ошибки при вызове методов
+                            }
+                        }
+                    } catch (attrError) {
+                        // Игнорируем ошибки при работе с атрибутами
+                    }
+                }
+            } catch (error) {
+                // Игнорируем все ошибки в обработчике событий
             }
         }, { passive: true });
         
@@ -99,7 +142,7 @@ function initAnimations() {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     const el = mutation.target;
-                    if (el.hasAttribute('data-aos-animated') && !el.classList.contains('aos-animate')) {
+                    if (el && el.nodeType === 1 && typeof el.hasAttribute === 'function' && el.hasAttribute('data-aos-animated') && !el.classList.contains('aos-animate')) {
                         // Восстанавливаем класс если он был удален
                         el.classList.add('aos-animate');
                     }
@@ -146,7 +189,7 @@ function initAnimations() {
                 // Помечаем все элементы которые уже анимированы, чтобы AOS их не трогал
                 const allAosEls = document.querySelectorAll('[data-aos].aos-animate');
                 allAosEls.forEach(el => {
-                    if (!el.hasAttribute('data-aos-animated')) {
+                    if (el && el.nodeType === 1 && typeof el.hasAttribute === 'function' && !el.hasAttribute('data-aos-animated')) {
                         el.setAttribute('data-aos-animated', 'true');
                     }
                 });
@@ -158,15 +201,16 @@ function initAnimations() {
         if ('IntersectionObserver' in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
-                    if (e.isIntersecting && !e.target.hasAttribute('data-aos-animated')) {
-                        e.target.classList.add('aos-animate');
-                        e.target.setAttribute('data-aos-animated', 'true');
-                        io.unobserve(e.target);
+                    const target = e.target;
+                    if (e.isIntersecting && target && target.nodeType === 1 && typeof target.hasAttribute === 'function' && !target.hasAttribute('data-aos-animated')) {
+                        target.classList.add('aos-animate');
+                        target.setAttribute('data-aos-animated', 'true');
+                        io.unobserve(target);
                     }
                 });
             }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
             els.forEach(el => {
-                if (!el.hasAttribute('data-aos-animated')) {
+                if (el && el.nodeType === 1 && typeof el.hasAttribute === 'function' && !el.hasAttribute('data-aos-animated')) {
                     io.observe(el);
                 }
             });
@@ -310,17 +354,18 @@ function enforceOnScrollAnimations() {
     if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
+                const target = e.target;
                 // Добавляем класс только если его еще нет и элемент еще не был анимирован
-                if (e.isIntersecting && !e.target.classList.contains('aos-animate') && !e.target.hasAttribute('data-aos-animated')) {
-                    e.target.classList.add('aos-animate');
-                    e.target.setAttribute('data-aos-animated', 'true');
-                    io.unobserve(e.target);
+                if (e.isIntersecting && target && target.nodeType === 1 && typeof target.hasAttribute === 'function' && !target.classList.contains('aos-animate') && !target.hasAttribute('data-aos-animated')) {
+                    target.classList.add('aos-animate');
+                    target.setAttribute('data-aos-animated', 'true');
+                    io.unobserve(target);
                 }
             });
         }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
         elements.forEach(el => {
             // Наблюдаем только за элементами, которые еще не анимированы
-            if (!el.classList.contains('aos-animate') && !el.hasAttribute('data-aos-animated')) {
+            if (el && el.nodeType === 1 && typeof el.hasAttribute === 'function' && !el.classList.contains('aos-animate') && !el.hasAttribute('data-aos-animated')) {
                 io.observe(el);
             }
         });
@@ -596,13 +641,11 @@ function initForms() {
         btnSpinner.style.display = 'inline-block';
         submitBtn.disabled = true;
 
-        // Отправка данных через Netlify Function (безопасно!)
+        // Отправка данных через PHP API (безопасно!)
         try {
-            console.log('Отправка заявки через Netlify Function...');
-
-            // Отправляем через Netlify Serverless Function
-            // Токен скрыт на сервере Netlify!
-            const response = await fetch('/.netlify/functions/send-telegram', {
+            // Отправляем через PHP API
+            // Токен скрыт на сервере!
+            let response = await fetch('/api/send-telegram', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -610,8 +653,32 @@ function initForms() {
                 body: new URLSearchParams(formData)
             });
 
+            // Если 404, пробуем с .php
+            if (!response.ok && response.status === 404) {
+                response = await fetch('/api/send-telegram.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(formData)
+                });
+            }
+
+            // Проверяем статус ответа
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Проверяем Content-Type
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                // Если получили HTML вместо JSON, пробуем извлечь текст ошибки
+                const text = await response.text();
+                console.error('API вернул HTML вместо JSON:', text.substring(0, 200));
+                throw new Error('Сервер вернул неверный формат ответа. Попробуйте позже.');
+            }
+
             const result = await response.json();
-            console.log('Результат отправки:', result);
 
             // Скрываем спиннер
             btnText.style.display = 'inline-block';
@@ -774,6 +841,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScroll();
     initBackToTop();
     initReviewsSlider(); // Инициализируем слайдер отзывов
+    initGallerySlider(); // Инициализируем слайдер галереи
     initDocumentModal(); // Инициализируем модальное окно документов
     loadStartDate(); // Загружаем актуальную дату старта
 
@@ -955,10 +1023,31 @@ function initStats() {
     io.observe(section);
 }
 
-// Load Start Date from Netlify Function
+// Load Start Date from PHP API
 async function loadStartDate() {
     try {
-        const response = await fetch('/.netlify/functions/get-start-date?t=' + Date.now());
+        // Пробуем сначала без .php, потом с .php
+        let response = await fetch('/api/get-start-date?t=' + Date.now());
+        
+        // Если 404, пробуем с .php
+        if (!response.ok && response.status === 404) {
+            response = await fetch('/api/get-start-date.php?t=' + Date.now());
+        }
+        
+        // Проверяем статус ответа
+        if (!response.ok) {
+            return; // Используем дату по умолчанию из HTML
+        }
+        
+        // Проверяем Content-Type
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Если получили HTML вместо JSON, пробуем извлечь текст ошибки
+            const text = await response.text();
+            console.warn('API вернул HTML вместо JSON:', text.substring(0, 200));
+            return; // Используем дату по умолчанию из HTML
+        }
+        
         const data = await response.json();
 
         if (data.success && data.date) {
@@ -967,9 +1056,8 @@ async function loadStartDate() {
             if (typeof fitStartBannerDate === 'function') {
                 fitStartBannerDate();
             }
-    }
+        }
     } catch (error) {
-        console.error('Ошибка загрузки даты старта:', error);
         // Оставляем дату по умолчанию из HTML
     }
 }
@@ -1116,6 +1204,155 @@ function initReviewsSlider() {
     }, 50);
 }
 
+// Initialize Gallery Slider
+function initGallerySlider() {
+    const track = document.getElementById('galleryTrack');
+    const prevBtn = document.getElementById('galleryPrev');
+    const nextBtn = document.getElementById('galleryNext');
+    const dotsContainer = document.getElementById('galleryDots');
+    
+    if (!track || !prevBtn || !nextBtn || !dotsContainer) {
+        return; // Элементы не найдены
+    }
+    
+    const items = track.querySelectorAll('.gallery-item');
+    const totalItems = items.length;
+    let currentIndex = 0;
+    
+    // Определяем количество видимых картинок
+    function getVisibleCount() {
+        const width = window.innerWidth;
+        if (width <= 768) return 1;
+        if (width <= 1024) return 2;
+        if (width <= 1200) return 3;
+        return 4;
+    }
+    
+    // Получаем ширину одной картинки (включая gap)
+    function getItemWidth() {
+        const firstItem = items[0];
+        if (!firstItem) return 0;
+        const trackRect = track.getBoundingClientRect();
+        const sliderRect = track.parentElement.getBoundingClientRect();
+        const visibleCount = getVisibleCount();
+        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+        
+        // Точная ширина: ширина видимой области делим на количество картинок
+        const itemWidth = (sliderRect.width - (gap * (visibleCount - 1))) / visibleCount;
+        return itemWidth + gap;
+    }
+    
+    // Создаем точки навигации
+    function createDots() {
+        dotsContainer.innerHTML = '';
+        const visibleCount = getVisibleCount();
+        const totalDots = Math.max(1, totalItems - visibleCount + 1);
+        
+        for (let i = 0; i < totalDots; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'gallery__dot';
+            if (i === 0) dot.classList.add('gallery__dot--active');
+            dot.setAttribute('aria-label', `Перейти к группе фото ${i + 1}`);
+            dot.addEventListener('click', () => goToIndex(i));
+            dotsContainer.appendChild(dot);
+        }
+    }
+    
+    // Переход к индексу
+    function goToIndex(index) {
+        const visibleCount = getVisibleCount();
+        const maxIndex = Math.max(0, totalItems - visibleCount);
+        
+        if (index < 0 || index > maxIndex) return;
+        
+        currentIndex = index;
+        
+        // Более точный расчет с учетом реальной позиции картинки
+        const firstItem = items[0];
+        if (!firstItem) return;
+        
+        // Используем getBoundingClientRect для точного расчета
+        const firstRect = firstItem.getBoundingClientRect();
+        const trackRect = track.getBoundingClientRect();
+        const sliderRect = track.parentElement.getBoundingClientRect();
+        
+        // Ширина элемента относительно трека
+        const itemWidth = firstItem.offsetWidth;
+        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+        
+        // Если gap не определен, пробуем вычислить из разницы позиций картинок
+        let actualGap = gap;
+        if (items.length > 1 && gap === 0) {
+            const secondItem = items[1];
+            const secondRect = secondItem.getBoundingClientRect();
+            actualGap = secondRect.left - firstRect.right;
+        }
+        
+        // Вычисляем смещение так, чтобы первая видимая картинка была на левом краю slider (с учетом padding)
+        // Смещение = индекс * (ширина картинки + gap) минус начальный padding трека
+        const trackPaddingLeft = parseFloat(window.getComputedStyle(track).paddingLeft) || 0;
+        const translateX = -currentIndex * (itemWidth + actualGap);
+        
+        track.style.transform = `translateX(${translateX}px)`;
+        
+        // Обновляем точки
+        const dots = dotsContainer.querySelectorAll('.gallery__dot');
+        dots.forEach((dot, i) => {
+            if (i === currentIndex) {
+                dot.classList.add('gallery__dot--active');
+            } else {
+                dot.classList.remove('gallery__dot--active');
+            }
+        });
+        
+        // Обновляем кнопки
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
+    }
+    
+    // Переход на один шаг вперед/назад
+    function nextSlide() {
+        const visibleCount = getVisibleCount();
+        const maxIndex = Math.max(0, totalItems - visibleCount);
+        if (currentIndex < maxIndex) {
+            goToIndex(currentIndex + 1);
+        }
+    }
+    
+    function prevSlide() {
+        if (currentIndex > 0) {
+            goToIndex(currentIndex - 1);
+        }
+    }
+    
+    // Обработчики кнопок
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Обновление при изменении размера окна
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            createDots();
+            goToIndex(Math.min(currentIndex, Math.max(0, totalItems - getVisibleCount())));
+        }, 250);
+    });
+    
+    // Инициализация с небольшой задержкой для правильного расчета размеров
+    setTimeout(() => {
+        createDots();
+        goToIndex(0);
+        
+        // Принудительное обновление позиции после загрузки
+        setTimeout(() => {
+            if (currentIndex > 0) {
+                goToIndex(currentIndex);
+            }
+        }, 100);
+    }, 50);
+}
+
 // Initialize Document Modal
 function initDocumentModal() {
     const modal = document.getElementById('documentModal');
@@ -1163,6 +1400,9 @@ function initDocumentModal() {
         card.addEventListener('click', (e) => {
             // Игнорируем клики по кнопке (она уже обработана выше)
             if (e.target.closest('.document-card__zoom')) return;
+            
+            // Игнорируем карточки со ссылками (например, PDF документы)
+            if (card.querySelector('.document-card__link')) return;
             
             const img = card.querySelector('.document-card__image');
             if (img) {

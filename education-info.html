@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Отключение кеширования -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>Сведения об образовательной организации | Автошкола «Мустанг»</title>
+    <meta name="description"
+        content="Сведения об образовательной организации ООО «Автошкола «Мустанг»» в Архангельске. Основные сведения, документы, образование, руководство." />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo1.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/logo1.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css?v=20250101" />
+    <link rel="stylesheet" href="styles/components.css?v=20250101" />
+
+    <style>
+        .education-page {
+            padding: 8rem 2rem 4rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .education-page h1 {
+            font-family: var(--ff-head);
+            font-size: var(--fz-3xl);
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .education-page h2 {
+            font-family: var(--ff-head);
+            font-size: var(--fz-2xl);
+            color: var(--primary);
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .education-page h3 {
+            font-family: var(--ff-head);
+            font-size: var(--fz-xl);
+            color: var(--text-dark);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .education-page p {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .education-page .table-wrapper {
+            margin: 1.5rem 0;
+        }
+
+        .education-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .education-page table td {
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .education-page table td:first-child {
+            font-weight: 600;
+            background-color: #f5f5f5;
+            width: 40%;
+        }
+
+        .education-page table th {
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            text-align: left;
+            font-weight: 600;
+        }
+
+        /* Карточки для мобильных вместо таблиц */
+        .education-page .table-cards {
+            display: none;
+        }
+
+        .education-page .table-cards-simple {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .education-page .table-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .education-page .table-card-row {
+            display: flex;
+            flex-direction: column;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .education-page .table-cards-simple .table-card-row:last-child {
+            border-bottom: none;
+        }
+
+        .education-page .table-card .table-card-row:last-child {
+            border-bottom: none;
+        }
+
+        .education-page .table-card-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .education-page .table-card-value {
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .education-page .table-card-header {
+            background-color: #f5f5f5;
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .education-page ul,
+        .education-page ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .education-page li {
+            margin-bottom: 0.5rem;
+        }
+
+        .education-page .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .education-page .back-link:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .education-page .info-section {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+        }
+
+        .education-page .document-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .education-page .document-link:hover {
+            text-decoration: underline;
+        }
+
+        .education-page .document-link i {
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+
+        .education-page .service-item {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .education-page .service-item h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: var(--fz-lg);
+        }
+
+        .education-page .service-item ul {
+            margin-bottom: 0;
+        }
+
+        .education-page .gibdd-documents {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .education-page .gibdd-doc-item {
+            width: 100%;
+        }
+
+        .education-page .gibdd-doc-item img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .education-page {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .education-page h1 {
+                font-size: var(--fz-2xl);
+            }
+
+            .education-page h2 {
+                font-size: var(--fz-xl);
+            }
+
+            .education-page .info-section {
+                padding: 1rem;
+            }
+
+            /* Скрываем таблицы на мобильных */
+            .education-page .table-wrapper table {
+                display: none;
+            }
+
+            /* Показываем карточки на мобильных */
+            .education-page .table-cards {
+                display: block;
+            }
+
+            .education-page .gibdd-documents {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .education-page .service-item {
+                padding: 1rem;
+            }
+
+            .education-page .service-item h3 {
+                font-size: var(--fz-md);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="index.html" class="logo">
+                    <img src="assets/logo8.png" alt="Автошкола Мустанг" class="logo__image" width="180" height="50" />
+                </a>
+
+                <nav class="nav" id="nav">
+                    <a href="index.html#about" class="nav__link">О школе</a>
+                    <a href="index.html#fleet" class="nav__link">Автопарк</a>
+                    <a href="index.html#pricing" class="nav__link">Цены</a>
+                    <a href="index.html#reviews" class="nav__link">Отзывы</a>
+                    <a href="index.html#contact" class="nav__link">Контакты</a>
+                    <!-- extra links (hidden on desktop; shown in mobile) -->
+                    <a href="index.html#process" class="nav__link nav__link--extra">Этапы обучения</a>
+                    <a href="index.html#gallery" class="nav__link nav__link--extra">Галерея</a>
+                    <a href="index.html#faq" class="nav__link nav__link--extra">FAQ</a>
+                    <!-- desktop dropdown "more" (hidden on mobile) -->
+                    <div class="nav__more" aria-haspopup="true" aria-expanded="false">
+                        <button class="nav__more-trigger" type="button" aria-label="Ещё разделы">
+                            Ещё <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="nav__more-menu" role="menu">
+                            <a href="index.html#process" class="nav__more-item" role="menuitem">Этапы обучения</a>
+                            <a href="index.html#gallery" class="nav__more-item" role="menuitem">Галерея</a>
+                            <a href="index.html#faq" class="nav__more-item" role="menuitem">FAQ</a>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="header__actions">
+                    <div class="header__contact">
+                        <a href="tel:+79539396666" class="phone">
+                            <i class="fas fa-phone"></i>
+                            <span>8-953-939-66-66</span>
+                        </a>
+                        <div class="header__address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>пр. Троицкий, д. 67, оф. 413</span>
+                        </div>
+                    </div>
+                    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="education-page">
+        <h1>Сведения об образовательной организации</h1>
+
+        <!-- Основные сведения -->
+        <section class="info-section">
+            <h2>Основные сведения</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <tr>
+                        <td>Образовательное учреждение</td>
+                        <td>Общество с ограниченной ответственностью «Автошкола «Мустанг»»</td>
+                    </tr>
+                    <tr>
+                        <td>Дата создания организации</td>
+                        <td>16 ноября 2016 г.</td>
+                    </tr>
+                    <tr>
+                        <td>ОГРН</td>
+                        <td>1152901012417</td>
+                    </tr>
+                    <tr>
+                        <td>ИНН/КПП</td>
+                        <td>2901263464/290101001</td>
+                    </tr>
+                    <tr>
+                        <td>Учредитель</td>
+                        <td>ООО «Автошкола «Мустанг»»</td>
+                    </tr>
+                    <tr>
+                        <td>Директор</td>
+                        <td>Микуров Алексей Николаевич</td>
+                    </tr>
+                    <tr>
+                        <td>Телефон</td>
+                        <td>8(8182)696666; <a href="tel:+789522536999">89522536999</a></td>
+                    </tr>
+                    <tr>
+                        <td>Электронная почта</td>
+                        <td><a href="mailto:mustang29info@yandex.com">mustang29info@yandex.com</a></td>
+                    </tr>
+                    <tr>
+                        <td>Адрес сайта</td>
+                        <td><a href="https://mustang-29.ru/" target="_blank" rel="noopener">https://mustang-29.ru/</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Адрес</td>
+                        <td>163000 г. Архангельск, пр. Троицкий, д 67, оф. 413. ТЦ «Пирамида» 4 этаж</td>
+                    </tr>
+                    <tr>
+                        <td>График работы</td>
+                        <td>Понедельник — воскресенье — с 9.00 до 21:00, обеденный перерыв — с 13:00 до 14:00</td>
+                    </tr>
+                </table>
+
+                <!-- Карточки для мобильных -->
+                <div class="table-cards">
+                    <div class="table-cards-simple">
+                        <div class="table-card-row">
+                            <div class="table-card-label">Образовательное учреждение</div>
+                            <div class="table-card-value">Общество с ограниченной ответственностью «Автошкола «Мустанг»»
+                            </div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Дата создания организации</div>
+                            <div class="table-card-value">16 ноября 2016 г.</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">ОГРН</div>
+                            <div class="table-card-value">1152901012417</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">ИНН/КПП</div>
+                            <div class="table-card-value">2901263464/290101001</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Учредитель</div>
+                            <div class="table-card-value">ООО «Автошкола «Мустанг»»</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Директор</div>
+                            <div class="table-card-value">Микуров Алексей Николаевич</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Телефон</div>
+                            <div class="table-card-value">8(8182)696666; <a href="tel:+789522536999">89522536999</a>
+                            </div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Электронная почта</div>
+                            <div class="table-card-value"><a
+                                    href="mailto:mustang29info@yandex.com">mustang29info@yandex.com</a></div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Адрес сайта</div>
+                            <div class="table-card-value"><a href="https://mustang-29.ru/" target="_blank"
+                                    rel="noopener">https://mustang-29.ru/</a></div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">Адрес</div>
+                            <div class="table-card-value">163000 г. Архангельск, пр. Троицкий, д 67, оф. 413. ТЦ
+                                «Пирамида» 4 этаж</div>
+                        </div>
+                        <div class="table-card-row">
+                            <div class="table-card-label">График работы</div>
+                            <div class="table-card-value">Понедельник — воскресенье — с 9.00 до 21:00, обеденный перерыв
+                                — с 13:00 до 14:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Структура и органы управления -->
+        <section class="info-section">
+            <h2>Структура и органы управления</h2>
+
+            <p>Организационная структура ООО «Автошкола «Мустанг»»:</p>
+
+            <ul>
+                <li><strong>Руководитель ООО «Автошкола «Мустанг»»</strong> — Микуров Алексей Николаевич</li>
+                <li><strong>Заместитель по учебно-производственной</strong></li>
+                <li><strong>Педагогический совет</strong></li>
+                <li><strong>Заместитель по материально-техническому</strong></li>
+                <li><strong>Преподаватели</strong> — осуществляют теоретическую подготовку обучающихся</li>
+                <li><strong>Мастера производственного обучения вождению</strong> — осуществляют практическую подготовку
+                    обучающихся</li>
+            </ul>
+        </section>
+
+        <!-- Документы -->
+        <section class="info-section">
+            <h2>Документы</h2>
+
+            <ol>
+                <li>Устав образовательной деятельности</li>
+                <li>Лицензия на осуществление образовательной деятельности</li>
+                <li>Государственная аккредитация не проводится</li>
+                <li>Образец договора об оказания платных услуг
+                    <ul>
+                        <li><a href="assets/doc/Договор с учениками Мустанг.pdf" target="_blank" rel="noopener"
+                                class="document-link"><i class="fas fa-file-pdf"></i> Договор с учениками (PDF)</a></li>
+                    </ul>
+                </li>
+                <li>Акт самообследования учебно-материальной базы
+                    <ul>
+                        <li><a href="assets/doc/akt_samoobsl_MUSTI.pdf" target="_blank" rel="noopener"
+                                class="document-link"><i class="fas fa-file-pdf"></i> Акт самообследования (PDF)</a>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p>Все документы доступны для ознакомления в разделе <a href="index.html#documents"
+                    class="document-link">Наши документы</a>.</p>
+        </section>
+
+        <!-- Образование -->
+        <section class="info-section">
+            <h2>Образование</h2>
+
+            <h3>1. Об уровнях образования, формах обучения, нормативных сроках обучения</h3>
+
+            <p>ООО «Автошкола «Мустанг»» реализует образовательные программы профессионального обучения водителей
+                транспортных средств категории «В».</p>
+
+            <p>Для обеспечения образовательного процесса и реализации образовательных программ автошколой разработаны и
+                приняты локальные нормативные акты и материалы для проведения промежуточной и итоговой аттестации
+                обучающихся.</p>
+
+            <p>Реализация программ осуществляется по договорам об образовании за счет средств физических и (или)
+                юридических лиц.</p>
+
+            <p>Форма обучения — очная.</p>
+
+            <p>Обучение ведется на русском языке.</p>
+
+            <p><strong>Нормативные сроки обучения:</strong></p>
+            <ul>
+                <li>категория «В» — 3 месяца</li>
+            </ul>
+
+            <h3>2. Описание образовательной программы с приложением ее копии</h3>
+
+            <p>Информация об образовательных программах.</p>
+
+            <h3>3. Образовательной деятельности, финансовое обеспечение которой осуществляется за счет бюджетных
+                ассигнований федерального бюджета, бюджетов субъектов Российской Федерации, местных бюджетов не ведется.
+            </h3>
+
+            <p>Образовательная деятельность за счет бюджетных ассигнований не ведется.</p>
+        </section>
+
+        <!-- Образовательные стандарты -->
+        <section class="info-section">
+            <h2>Образовательные стандарты</h2>
+
+            <ul>
+                <li>Приказ Минпросвещения России от 08.11.2021 N 808 "Об утверждении примерных программ
+                    профессионального обучения водителей транспортных средств соответствующих категорий и подкатегорий"
+                    (Зарегистрировано в Минюсте России 10.03.2022 N 67672)
+                    <ul>
+                        <li><a href="https://zebratomsk.ru/docs/2022/pr2021.pdf?ysclid=liqj47yeo6166318204"
+                                target="_blank" rel="noopener"
+                                class="document-link">https://zebratomsk.ru/docs/2022/pr2021.pdf?ysclid=liqj47yeo6166318204</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>"Разъяснения о разработке и реализации новых примерных программ переподготовки водителей
+                    транспортных средств" (утв. Минпросвещения России)
+                    <ul>
+                        <li><a href="https://legalacts.ru/doc/razjasnenija-o-razrabotke-i-realizatsii-novykh-primernykh-programm-perepodgotovki/?ysclid=liqj6eu8b7842554567"
+                                target="_blank" rel="noopener"
+                                class="document-link">https://legalacts.ru/doc/razjasnenija-o-razrabotke-i-realizatsii-novykh-primernykh-programm-perepodgotovki/?ysclid=liqj6eu8b7842554567</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Руководство. Педагогический состав -->
+        <section class="info-section">
+            <h2>Руководство. Педагогический состав</h2>
+
+            <h3>1. Руководитель ООО «Автошкола «Мустанг» — Микуров Алексей Николаевич.</h3>
+
+            <p>Должность — директор и мастер производственного обучения.</p>
+
+            <p>Контактный телефон: <a href="tel:+789522536999">8 (952) 253 69-99</a>, e-mail: <a
+                    href="mailto:mustang29info@yandex.com">mustang29info@yandex.com</a></p>
+        </section>
+
+        <!-- Материально-техническое обеспечение -->
+        <section class="info-section">
+            <h2>Материально-техническое обеспечение и оснащенность образовательного процесса</h2>
+
+            <p>Учебное здание по адресу: г. Архангельск, пр. Троицкий 67.</p>
+
+            <p><strong>Учебные классы - 1:</strong></p>
+            <ul>
+                <li>класс по Устройству и техническому обслуживанию транспортных средств — 1</li>
+                <li>класс по изучению Правил Дорожного движения, Безопасности Дорожного движения и оказания первой
+                    медицинской помощи — 1</li>
+                <li>компьютерных классов – 1</li>
+            </ul>
+
+            <p>Учебный класс оборудован современным учебным оборудованием, стендами, плакатами, компьютерам и
+                мультимедийным устройствам.</p>
+
+            <p><strong>Земельный участок: Автодром. Для учебного автодрома, общая площадь 5186 кв.м.</strong></p>
+
+            <p>Адрес объекта: Архангельская область, г. Архангельск, Октябрьский территориальный округ по Талажскому
+                шоссе земельный участок Сектор 1-площадью 2593 кв. м.</p>
+
+            <ul>
+                <li>автодром для отработки навыков вождения</li>
+            </ul>
+
+            <p>Оборудование автодрома и площадки для отработки первичных навыков вождения, обеспечивает в полном объеме
+                выполнение программы обучения по вождению.</p>
+
+            <p><strong>Учебные транспортные средства арендуются школой.</strong></p>
+            <ul>
+                <li>легковые транспортные средства категории «В» — 6 шт.</li>
+                <li>прицеп категории «ВЕ» — 1 шт.</li>
+            </ul>
+
+            <p>Специальных технических средств обучения коллективного и индивидуального пользования для инвалидов и лиц
+                с ограниченными возможностями здоровья не имеется.</p>
+        </section>
+
+        <!-- Платные образовательные услуги -->
+        <section class="info-section">
+            <h2>Платные образовательные услуги</h2>
+
+            <div class="service-item">
+                <h3>Программа профессиональной подготовки водителей транспортных средств категории «В» (механическая
+                    трансмиссия)</h3>
+                <ul>
+                    <li><strong>Срок обучения:</strong> 3 месяца (195 часов)</li>
+                    <li><strong>Стоимость обучения за курс:</strong> 34 500 рублей</li>
+                    <li><strong>Присваиваемый уровень квалификации:</strong> Водитель автомобиля категории «В»</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Стипендии и иные виды материальной поддержки -->
+        <section class="info-section">
+            <h2>Стипендии и иные виды материальной поддержки</h2>
+
+            <p>Стипендии, меры социальной поддержки, общежитие, интернат — отсутствуют.</p>
+
+            <p>Трудоустройство выпускников не осуществляется.</p>
+        </section>
+
+        <!-- Вакантные места для приема (перевода) -->
+        <section class="info-section">
+            <h2>Вакантные места для приема (перевода)</h2>
+
+            <p>Количество вакантных мест для приема по договорам за счет средств физических и (или) юридических лиц г.
+                Архангельск на 01.07.2023г.</p>
+
+            <div class="service-item">
+                <h3>Программа профессиональной подготовки водителей транспортных средств категории «В» (механическая
+                    трансмиссия)</h3>
+                <ul>
+                    <li><strong>Срок обучения:</strong> 3 месяца (195 часов)</li>
+                    <li><strong>Стоимость обучения за курс:</strong> 33 000 рублей</li>
+                    <li><strong>Количество вакантных мест для приема по договорам за счет средств физических и/ или
+                            юридических лиц:</strong> 10</li>
+                    <li><strong>Присваиваемый уровень квалификации:</strong> Водитель автомобиля категории «В»</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Заявление в ГИБДД -->
+        <section class="info-section">
+            <h2>Заявление в ГИБДД</h2>
+
+            <p>Образцы заявлений в ГИБДД:</p>
+
+            <div class="gibdd-documents">
+                <div class="gibdd-doc-item">
+                    <img src="assets/doc/заявлениеГИБДД1.png" alt="Заявление в ГИБДД 1" />
+                </div>
+                <div class="gibdd-doc-item">
+                    <img src="assets/doc/заявлениеГИБДД2.png" alt="Заявление в ГИБДД 2" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Кнопка возврата -->
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Вернуться на главную страницу
+        </a>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <div class="footer__logo">
+                        <img src="assets/logo8.png" alt="Автошкола Мустанг" class="footer__logo-image" width="180"
+                            height="50" />
+                    </div>
+                    <p class="footer__description">
+                        Автошкола «Мустанг» — уверенное вождение с первого занятия. Мы
+                        учим не просто сдавать экзамены, а уверенно чувствовать себя на
+                        дороге. Более 250 выпускников с 2015 года.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://vk.com/amustang2021" target="_blank" rel="noopener noreferrer"
+                            class="social-link" aria-label="ВКонтакте">
+                            <i class="fab fa-vk"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer__section">
+                    <h3 class="footer__title">Навигация</h3>
+                    <nav class="footer__nav">
+                        <a href="index.html#about" class="footer__link">О школе</a>
+                        <a href="index.html#process" class="footer__link">Этапы обучения</a>
+                        <a href="index.html#benefits" class="footer__link">Преимущества</a>
+                        <a href="index.html#pricing" class="footer__link">Цены</a>
+                        <a href="education-info.html" class="footer__link">Сведения об образовательной организации</a>
+                    </nav>
+                </div>
+
+                <div class="footer__section">
+                    <h3 class="footer__title">Контакты</h3>
+                    <div class="footer__contacts">
+                        <a href="tel:+79539396666" class="footer__contact">8-953-939-66-66</a>
+                        <a href="mailto:mustang29info@yandex.com" class="footer__contact">mustang29info@yandex.com</a>
+                        <p class="footer__contact">
+                            163000 г. Архангельск, пр. Троицкий, д. 67, оф. 413
+                        </p>
+                        <p class="footer__contact">Понедельник — воскресенье — с 9.00 до 21:00, обеденный перерыв — с
+                            13:00 до 14:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <div class="footer__bottom-content">
+                    <div class="footer__bottom-text">
+                        <p>&copy; 2026 Автошкола «Мустанг». Все права защищены. Директор: Микуров Алексей Николаевич</p>
+                        <p>ОГРН 1152901012417, ИНН/КПП 2901263464/290101001</p>
+                    </div>
+                    <div class="footer__legal-links">
+                        <a href="privacy.html" class="footer__legal-link">Политика конфиденциальности</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js?v=20250101"></script>
+</body>
+
+</html>
