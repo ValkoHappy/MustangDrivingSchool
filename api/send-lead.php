@@ -9,6 +9,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     jsonResponse(false, 'Method Not Allowed', 405);
 }
 
+$contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+if ($contentLength > 2048) {
+    jsonResponse(false, 'Запрос слишком большой.', 413);
+}
+
+$contentType = strtolower(trim(explode(';', (string) ($_SERVER['CONTENT_TYPE'] ?? ''), 2)[0]));
+if ($contentType !== 'application/x-www-form-urlencoded') {
+    jsonResponse(false, 'Неподдерживаемый формат запроса.', 415);
+}
+
 if (!requestComesFromThisSite()) {
     jsonResponse(false, 'Запрос отклонён.', 403);
 }

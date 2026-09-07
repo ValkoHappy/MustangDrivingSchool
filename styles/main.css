@@ -154,6 +154,8 @@ a {
 
 .section {
     padding: 5rem 0;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
 }
 
 .section__title {

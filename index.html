@@ -49,8 +49,8 @@
   <meta property="twitter:image" content="https://mustang-29.ru/assets/logo8.png" />
 
   <!-- Preload critical resources -->
-  <link rel="preload" href="assets/mustang.png" as="image" fetchpriority="high" />
-  <link rel="preload" href="styles/main.css?v=20260820f" as="style" />
+  <link rel="preload" href="assets/mustang.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="styles/main.css?v=20260908a" as="style" />
 
   <!-- Fonts - оптимизация для мобильных -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -72,9 +72,9 @@
   </noscript>
 
   <!-- Styles - inline critical CSS for above-the-fold content -->
-  <link rel="stylesheet" href="styles/main.css?v=20260820f" />
-  <link rel="stylesheet" href="styles/components.css?v=20260820f" />
-  <link rel="stylesheet" href="styles/gallery.css?v=20260820f" />
+  <link rel="stylesheet" href="styles/main.css?v=20260908a" />
+  <link rel="stylesheet" href="styles/components.css?v=20260908a" />
+  <link rel="stylesheet" href="styles/gallery.css?v=20260908a" />
   <noscript>
     <style>[data-aos] { opacity: 1 !important; visibility: visible !important; transform: none !important; }</style>
   </noscript>
@@ -158,7 +158,7 @@
     <div class="container">
       <div class="header__inner">
         <a href="#home" class="logo">
-          <img src="assets/logo8.png" alt="Автошкола Мустанг" class="logo__image" width="180" height="50" />
+          <img src="assets/logo-ui.webp" alt="Автошкола Мустанг" class="logo__image" width="180" height="61" />
         </a>
 
         <nav class="nav" id="nav">
@@ -253,9 +253,8 @@
 
           <!-- Car with Animation -->
           <div class="hero__image-wrapper">
-            <img src="assets/mustang.png" alt="Автомобиль Mustang" class="hero__image" width="800" height="600"
-              loading="eager" fetchpriority="high" data-aos="custom-car-in" data-aos-duration="900" data-aos-delay="550"
-              data-aos-easing="cubic-bezier(0.22, 1, 0.36, 1)" />
+            <img src="assets/mustang.webp" alt="Автомобиль Mustang" class="hero__image" width="800" height="600"
+              loading="eager" decoding="async" fetchpriority="high" />
             <div class="car-shadow" data-aos-delay="200"></div>
           </div>
         </div>
@@ -1286,7 +1285,8 @@
       <div class="footer__content">
         <div class="footer__section">
           <div class="footer__logo">
-            <img src="assets/logo8.png" alt="Автошкола Мустанг" class="footer__logo-image" width="180" height="50" />
+            <img src="assets/logo-ui.webp" alt="Автошкола Мустанг" class="footer__logo-image" width="180" height="61"
+              loading="lazy" decoding="async" />
           </div>
           <p class="footer__description">
             Автошкола «Мустанг» — уверенное вождение с первого занятия. Мы
@@ -1442,8 +1442,8 @@
     </div>
   </div>
 
-  <script src="js/app.js?v=20260820f" defer></script>
-  <script src="js/gallery.js?v=20260820f" defer></script>
+  <script src="js/app.js?v=20260908a" defer></script>
+  <script src="js/gallery.js?v=20260908a" defer></script>
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">

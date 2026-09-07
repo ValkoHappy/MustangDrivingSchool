@@ -5,6 +5,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
 
+if (!in_array(($_SERVER['REQUEST_METHOD'] ?? ''), ['GET', 'HEAD'], true)) {
+    jsonResponse(false, 'Method Not Allowed', 405);
+}
+
 $configuredDate = envValue('START_DATE', 'ОТКРЫТ');
 $displayDate = $configuredDate;
 
