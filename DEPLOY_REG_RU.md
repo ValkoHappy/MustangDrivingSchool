@@ -2,11 +2,35 @@
 
 Проект рассчитан на обычный Apache/PHP-хостинг REG.RU. Node.js, Composer и база данных не требуются.
 
-## 1. Загрузка файлов
+## 1. Обновление через Git
 
-Загрузите содержимое проекта через FTP или File Manager в корень сайта (`public_html` или `www`) и сохраните структуру каталогов.
+Репозиторий проекта: `https://github.com/ValkoHappy/MustangDrivingSchool.git`.
+Git уже установлен на REG.RU, поэтому архивы и FTP для обновлений не нужны.
 
-Не загружайте производственные секреты в Git. Файл `.env` создаётся отдельно на сервере.
+Однократно выполните в Shell-клиенте REG.RU. Команды сохранят текущий `.env` и сделают резервную копию старой папки:
+
+```bash
+set -e
+SITE="$HOME/www/mustang-29.ru"
+BACKUP="${SITE}.backup.$(date +%Y%m%d-%H%M%S)"
+test -f "$SITE/.env"
+mv "$SITE" "$BACKUP"
+git clone https://github.com/ValkoHappy/MustangDrivingSchool.git "$SITE"
+cp "$BACKUP/.env" "$SITE/.env"
+chmod 600 "$SITE/.env"
+cd "$SITE"
+git log -1 --oneline
+```
+
+Если каталог сайта у REG.RU отличается, замените только значение `SITE` на путь из раздела «Сайты».
+
+После этого каждое следующее обновление выполняется одной командой:
+
+```bash
+cd "$HOME/www/mustang-29.ru" && git pull --ff-only
+```
+
+Файл `.env` не входит в Git и не будет заменён при `git pull`. Не добавляйте его в репозиторий.
 
 ## 2. Конфигурация `.env`
 
