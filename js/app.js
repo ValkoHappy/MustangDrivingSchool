@@ -45,7 +45,9 @@ function isLowEndDevice() {
 function initAnimations() {
     const elements = document.querySelectorAll('[data-aos]');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const showImmediately = window.innerWidth <= 1024 || isLowEndDevice() || reduceMotion;
+    // На мобильных тоже оставляем мягкие появления. Полностью пропускаем их
+    // только при явном prefers-reduced-motion или отсутствии IntersectionObserver.
+    const showImmediately = reduceMotion;
 
     const reveal = (element, noAnimation = false) => {
         element.classList.add('aos-animate');

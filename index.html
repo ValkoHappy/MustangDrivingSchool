@@ -50,7 +50,7 @@
 
   <!-- Preload critical resources -->
   <link rel="preload" href="assets/mustang.webp" as="image" type="image/webp" fetchpriority="high" />
-  <link rel="preload" href="styles/main.css?v=20260908b" as="style" />
+  <link rel="preload" href="styles/main.css?v=20260908c" as="style" />
 
   <!-- Fonts - оптимизация для мобильных -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -64,17 +64,14 @@
       rel="stylesheet" />
   </noscript>
 
-  <!-- Icons - отложенная загрузка -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print"
-    onload="this.media='all'" />
-  <noscript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  </noscript>
+  <!-- Иконки: загружаем основным стилем, чтобы они не пропадали при медленном CDN -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
   <!-- Styles - inline critical CSS for above-the-fold content -->
-  <link rel="stylesheet" href="styles/main.css?v=20260908b" />
-  <link rel="stylesheet" href="styles/components.css?v=20260908b" />
-  <link rel="stylesheet" href="styles/gallery.css?v=20260908b" />
+  <link rel="stylesheet" href="styles/main.css?v=20260908c" />
+  <link rel="stylesheet" href="styles/components.css?v=20260908c" />
+  <link rel="stylesheet" href="styles/gallery.css?v=20260908c" />
   <noscript>
     <style>[data-aos] { opacity: 1 !important; visibility: visible !important; transform: none !important; }</style>
   </noscript>
@@ -254,7 +251,8 @@
           <!-- Car with Animation -->
           <div class="hero__image-wrapper">
             <img src="assets/mustang.webp" alt="Автомобиль Mustang" class="hero__image" width="800" height="600"
-              loading="eager" decoding="async" fetchpriority="high" />
+              loading="eager" decoding="async" fetchpriority="high" data-aos="custom-car-in" data-aos-duration="2500"
+              data-aos-delay="250" />
             <div class="car-shadow" data-aos-delay="200"></div>
           </div>
         </div>
@@ -1442,8 +1440,8 @@
     </div>
   </div>
 
-  <script src="js/app.js?v=20260908b" defer></script>
-  <script src="js/gallery.js?v=20260908b" defer></script>
+  <script src="js/app.js?v=20260908c" defer></script>
+  <script src="js/gallery.js?v=20260908c" defer></script>
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">

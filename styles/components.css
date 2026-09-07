@@ -326,10 +326,10 @@
 /* Custom AOS animations для машины */
 /* Начальное состояние изображения - ДО активации AOS */
 .hero__image[data-aos="custom-car-in"]:not(.aos-animate) {
-    /* Начальная позиция - машина вне экрана справа */
-    opacity: 0;
-    transform: translate3d(120vw, -18px, 0) scale(0.2) rotate(-3deg);
-    filter: blur(7px) saturate(0.95);
+    /* Компактная стартовая позиция: машина остаётся в viewport и красиво въезжает */
+    opacity: 0.12;
+    transform: translate3d(44px, -14px, 0) scale(0.88) rotate(-2deg);
+    filter: blur(3px) saturate(0.95);
     will-change: transform, opacity, filter;
     transition: none;
 }
@@ -767,8 +767,8 @@
 @keyframes carEnter {
     0% {
         opacity: 0;
-        transform: translate3d(600px, -300px, 0) scale(0.2) rotate(-3deg);
-        filter: blur(7px) saturate(0.95) drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
+        transform: translate3d(44px, -14px, 0) scale(0.88) rotate(-2deg);
+        filter: blur(3px) saturate(0.95) drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
     }
 
 

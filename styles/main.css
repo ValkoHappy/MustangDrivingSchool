@@ -112,26 +112,40 @@ body {
     }
 }
 
-/* AOS initialization fix - скрываем элементы до инициализации только на десктопе */
-@media (min-width: 769px) {
-    [data-aos]:not(.aos-animate):not(.no-animation) {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-    
-    /* Показываем элементы после инициализации AOS - навсегда, без возможности повторной анимации */
-    [data-aos].aos-animate,
-    [data-aos][data-aos-animated] {
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto;
-    }
-    
-    /* Предотвращаем AOS от снятия класса aos-animate */
-    [data-aos].aos-animate[data-aos-animated] {
-        /* Дополнительная защита - класс остается навсегда */
-    }
+/* AOS: единый мягкий reveal на всех ширинах, включая мобильные */
+[data-aos]:not(.aos-animate):not(.no-animation) {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease, visibility 0.6s ease, transform 0.75s ease;
+}
+
+[data-aos].aos-animate,
+[data-aos][data-aos-animated] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+}
+
+/* Базовые направления для элементов без собственной анимации */
+[data-aos="fade-up"]:not(.aos-animate),
+[data-aos="fade-up"]:not([data-aos-animated]) {
+    transform: translate3d(0, 24px, 0);
+}
+
+[data-aos="fade-right"]:not(.aos-animate),
+[data-aos="fade-right"]:not([data-aos-animated]) {
+    transform: translate3d(-24px, 0, 0);
+}
+
+[data-aos="fade-left"]:not(.aos-animate),
+[data-aos="fade-left"]:not([data-aos-animated]) {
+    transform: translate3d(24px, 0, 0);
+}
+
+[data-aos="zoom-in"]:not(.aos-animate),
+[data-aos="zoom-in"]:not([data-aos-animated]) {
+    transform: scale(0.94);
 }
 
 img {
@@ -154,8 +168,6 @@ a {
 
 .section {
     padding: 5rem 0;
-    content-visibility: auto;
-    contain-intrinsic-size: auto 800px;
 }
 
 .section__title {
@@ -195,34 +207,6 @@ a {
     .container { padding: 0 1.5rem; }
 }
 
-/* Отключение анимаций на планшетах для оптимизации */
-@media (max-width: 1024px) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-delay: 0ms !important;
-        transition-duration: 0.01ms !important;
-        transition-delay: 0ms !important;
-        scroll-behavior: auto !important;
-    }
-
-    [data-aos],
-    [data-aos].aos-animate,
-    .aos-animate {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-    }
-
-    .hero__image,
-    .hero__image.aos-animate {
-        animation: none !important;
-        transform: none !important;
-        opacity: 1 !important;
-    }
-}
-
 /* Section Subtitle */
 .section__subtitle {
     font-size: var(--fz-lg);
@@ -256,36 +240,8 @@ a {
     }
 }
 
-/* Оптимизация производительности для мобильных - отключаем анимации */
+/* На мобильном сохраняем лёгкие эффекты; полное отключение — только через reduced motion */
 @media (max-width: 768px) {
-    /* Полностью отключаем все анимации на мобильных */
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-delay: 0ms !important;
-        transition-duration: 0.01ms !important;
-        transition-delay: 0ms !important;
-        scroll-behavior: auto !important;
-    }
-    
-    /* Сразу показываем все элементы с анимациями */
-    [data-aos],
-    [data-aos].aos-animate,
-    .aos-animate {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-    }
-    
-    /* Отключаем анимацию машины */
-    .hero__image,
-    .hero__image.aos-animate {
-        animation: none !important;
-        transform: none !important;
-        opacity: 1 !important;
-    }
-    
     /* Отключаем hover эффекты на мобильных */
     .benefit-card:hover,
     .pricing-card:hover,
@@ -295,11 +251,6 @@ a {
     .gallery-item:hover {
         transform: none !important;
         box-shadow: var(--shadow-sm) !important;
-    }
-    
-    /* Отключаем счетчики анимацию на мобильных */
-    .stats .stat__value {
-        animation: none !important;
     }
     
     /* Включаем оптимизации GPU только для критичных элементов */
