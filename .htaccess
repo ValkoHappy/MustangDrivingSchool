@@ -1,94 +1,83 @@
-# Отключение OPcache для разработки
+# Apache settings for the REG.RU shared hosting environment.
+
 <IfModule mod_php.c>
     php_value opcache.revalidate_freq 0
 </IfModule>
 
-# Защита конфиденциальных файлов
-<FilesMatch "^(\.env|\.git|composer\.json|package\.json|\.htaccess)$">
-    Order allow,deny
-    Deny from all
+# Keep environment files and project metadata outside the public surface.
+<FilesMatch "^(\.env.*|composer\.(json|lock)|package(-lock)?\.json|\.htaccess)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
 
-# Кеширование статических файлов
 <IfModule mod_expires.c>
     ExpiresActive On
-    
-    # Изображения
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/webp "access plus 1 year"
     ExpiresByType image/svg+xml "access plus 1 year"
-    
-    # CSS и JavaScript - без кеширования для разработки
-    ExpiresByType text/css "access plus 0 seconds"
-    ExpiresByType application/javascript "access plus 0 seconds"
-    ExpiresByType text/javascript "access plus 0 seconds"
-    
-    # HTML - без кеширования
-    ExpiresByType text/html "access plus 0 seconds"
-    
-    # Шрифты
     ExpiresByType font/woff2 "access plus 1 year"
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType text/css "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 0 seconds"
+    ExpiresByType text/javascript "access plus 0 seconds"
+    ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
-# Сжатие файлов
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
 
-# Заголовки кеширования
 <IfModule mod_headers.c>
-    # CSS и JS - без кеширования для разработки
     <FilesMatch "\.(css|js)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
+        Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
-    
-    # HTML - без кеширования
     <FilesMatch "\.(html|htm)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
+        Header set Cache-Control "no-cache, must-revalidate"
         Header set Expires "0"
     </FilesMatch>
-    
-    # Изображения - можно оставить кеширование
     <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|ttf)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
-    
-    # CORS для API
-    <FilesMatch "\.(php)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
-# Редирект с www на без www (опционально)
-# RewriteEngine On
-# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-
-# Принудительный HTTPS (опционально)
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# Редирект для API без расширения .php
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-    
-    # Редирект /api/get-start-date на /api/get-start-date.php
+
+    # Do not expose VCS directories even if a server rule changes later.
+    RewriteRule (^|/)\.git(?:/|$) - [F,L,NC]
+
+    # Redirect live traffic to HTTPS; local development hosts are excluded.
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # Keep a single canonical host.
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^api/get-start-date$ api/get-start-date.php [L]
-    
-    # Редирект /api/send-telegram на /api/send-telegram.php
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^api/send-telegram$ api/send-telegram.php [L]
-</IfModule>
+    RewriteRule ^api/send-lead$ api/send-lead.php [L]
 
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^privacy$ /privacy.html [R=301,L]
+</IfModule>

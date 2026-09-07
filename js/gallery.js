@@ -9,6 +9,7 @@ class Gallery {
         this.prevButton = null;
         this.nextButton = null;
         this.isAnimating = false;
+        this.lastFocusedElement = null;
         
         // Swipe variables
         this.startX = 0;
@@ -41,9 +42,13 @@ class Gallery {
     createLightbox() {
         this.lightbox = document.createElement('div');
         this.lightbox.className = 'lightbox';
+        this.lightbox.setAttribute('role', 'dialog');
+        this.lightbox.setAttribute('aria-modal', 'true');
+        this.lightbox.setAttribute('aria-hidden', 'true');
+        this.lightbox.setAttribute('aria-label', 'Просмотр фотографий выпускников');
         this.lightbox.innerHTML = `
             <div class="lightbox__content">
-                <img class="lightbox__image" src="" alt="" />
+                <img class="lightbox__image" alt="" />
             </div>
             <div class="lightbox__controls">
                 <button class="lightbox__nav lightbox__nav--prev" aria-label="Предыдущее фото">
@@ -71,6 +76,7 @@ class Gallery {
         document.addEventListener('click', (e) => {
             const galleryItem = e.target.closest('.gallery-item');
             if (galleryItem) {
+                this.lastFocusedElement = galleryItem;
                 const index = Array.from(document.querySelectorAll('.gallery-item')).indexOf(galleryItem);
                 this.openLightbox(index);
             }
@@ -111,14 +117,26 @@ class Gallery {
                 case 'ArrowRight':
                     this.nextImage();
                     break;
+                case 'Tab': {
+                    const focusable = [this.prevButton, this.nextButton, this.lightbox.querySelector('.lightbox__close')]
+                        .filter(Boolean);
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                    break;
+                }
             }
         });
         
         // Swipe events - только на изображении
         this.bindSwipeEvents();
         
-        // Предзагрузка изображений
-        this.preloadImages();
     }
     
     bindSwipeEvents() {
@@ -128,8 +146,8 @@ class Gallery {
         document.addEventListener('mouseup', this.endDrag.bind(this));
         
         // Touch events - ТОЛЬКО на изображении
-        this.lightboxImage.addEventListener('touchstart', this.startDrag.bind(this), { passive: true });
-        document.addEventListener('touchmove', this.drag.bind(this), { passive: true });
+        this.lightboxImage.addEventListener('touchstart', this.startDrag.bind(this), { passive: false });
+        document.addEventListener('touchmove', this.drag.bind(this), { passive: false });
         document.addEventListener('touchend', this.endDrag.bind(this), { passive: true });
     }
     
@@ -201,8 +219,10 @@ class Gallery {
         
         this.currentIndex = index;
         this.lightbox.classList.add('active');
+        this.lightbox.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         this.showImage();
+        requestAnimationFrame(() => this.lightbox.querySelector('.lightbox__close')?.focus());
         
         setTimeout(() => {
             this.lightbox.style.opacity = '1';
@@ -216,11 +236,13 @@ class Gallery {
         
         setTimeout(() => {
             this.lightbox.classList.remove('active');
+            this.lightbox.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
             // Сбрасываем трансформации при закрытии
             this.lightboxImage.style.transform = '';
             this.lightboxImage.style.opacity = '';
             this.lightboxImage.style.transition = '';
+            if (this.lastFocusedElement) this.lastFocusedElement.focus();
         }, 300);
     }
     
@@ -301,12 +323,6 @@ class Gallery {
         }
     }
     
-    preloadImages() {
-        this.images.forEach(image => {
-            const img = new Image();
-            img.src = image.src;
-        });
-    }
 }
 
 // Initialize gallery when DOM is loaded

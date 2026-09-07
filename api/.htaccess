@@ -1,11 +1,13 @@
-# Разрешаем выполнение PHP файлов
-<IfModule mod_php.c>
-    php_flag engine on
-</IfModule>
+Options -Indexes
 
-# Разрешаем доступ к PHP файлам
-<FilesMatch "\.php$">
-    Order allow,deny
-    Allow from all
+# Shared helpers and retired handlers must never be requested directly.
+<FilesMatch "^(config|test|send-telegram|get-start-date-simple)\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
 

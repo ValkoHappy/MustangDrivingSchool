@@ -2,13 +2,13 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://mustang-driving.ru/sitemap.xml
+Sitemap: https://mustang-29.ru/sitemap.xml
 
-# Disallow crawling of unnecessary files
-Disallow: /js/
-Disallow: /styles/
+# Keep implementation details out of the index while allowing crawlers to
+# fetch CSS and JavaScript required for rendering.
 Disallow: /*.json$
 Disallow: /*.log$
+Disallow: /api/
 
 # Host
-Host: https://mustang-driving.ru
+Host: mustang-29.ru

@@ -26,6 +26,12 @@
 }
 
 .gallery__track .gallery-item {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
     min-width: calc((100% - 6rem) / 4); /* 4 картинки: 100% минус 3 gap по 2rem */
     width: calc((100% - 6rem) / 4);
     max-width: calc((100% - 6rem) / 4);
@@ -40,6 +46,11 @@
     box-shadow: var(--shadow-lg);
     background: var(--gray-light);
     aspect-ratio: 4/3;
+}
+
+.gallery__track .gallery-item:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 4px;
 }
 
 .gallery__track .gallery-item:hover {

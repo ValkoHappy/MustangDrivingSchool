@@ -43,6 +43,32 @@ function isLowEndDevice() {
 
 // Initialize AOS with reduced motion support
 function initAnimations() {
+    const elements = document.querySelectorAll('[data-aos]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const showImmediately = window.innerWidth <= 1024 || isLowEndDevice() || reduceMotion;
+
+    const reveal = (element, noAnimation = false) => {
+        element.classList.add('aos-animate');
+        element.setAttribute('data-aos-animated', 'true');
+        if (noAnimation) element.classList.add('no-animation');
+    };
+
+    if (showImmediately || !('IntersectionObserver' in window)) {
+        elements.forEach(element => reveal(element, true));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            reveal(entry.target);
+            observer.unobserve(entry.target);
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    elements.forEach(element => observer.observe(element));
+    return;
+
     // Отключаем анимации на мобильных/планшетах для лучшей производительности
     const isMobile = window.innerWidth <= 1024;
     const isLowEnd = isLowEndDevice();
@@ -228,21 +254,24 @@ function initMobileNav() {
     const navToggle = document.getElementById('navToggle');
     const nav = document.getElementById('nav');
 
-    if (navToggle && nav) {
-        navToggle.addEventListener('click', () => {
-            nav.classList.toggle('active');
-            navToggle.classList.toggle('active');
-            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
-        });
-    }
+    if (!navToggle || !nav) return;
+
+    navToggle.setAttribute('aria-controls', 'nav');
+    navToggle.setAttribute('aria-expanded', 'false');
+
+    const setOpen = (open) => {
+        nav.classList.toggle('active', open);
+        navToggle.classList.toggle('active', open);
+        navToggle.setAttribute('aria-expanded', String(open));
+        navToggle.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+        document.body.style.overflow = open ? 'hidden' : '';
+    };
+
+    navToggle.addEventListener('click', () => setOpen(!nav.classList.contains('active')));
 
     // Close mobile menu when clicking on a link
     document.querySelectorAll('.nav__link').forEach(link => {
-        link.addEventListener('click', () => {
-            nav.classList.remove('active');
-            navToggle.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', () => setOpen(false));
     });
 }
 
@@ -253,17 +282,22 @@ function initNavDropdown() {
     const menu = more ? more.querySelector('.nav__more-menu') : null;
     if (!more || !trigger || !menu) return;
 
+    if (!menu.id) menu.id = 'nav-more-menu';
+    trigger.setAttribute('aria-controls', menu.id);
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+
     let closeTimer;
     const open = () => {
         clearTimeout(closeTimer);
         more.classList.add('is-open');
-        more.setAttribute('aria-expanded', 'true');
+        trigger.setAttribute('aria-expanded', 'true');
     };
     const close = (delay = 120) => {
         clearTimeout(closeTimer);
         closeTimer = setTimeout(() => {
             more.classList.remove('is-open');
-            more.setAttribute('aria-expanded', 'false');
+            trigger.setAttribute('aria-expanded', 'false');
         }, delay);
     };
 
@@ -286,13 +320,14 @@ function initNavDropdown() {
 
     // Hover behavior on desktop only
     const mq = window.matchMedia('(min-width: 1201px)');
+    const closeOnLeave = () => close();
     const bindHover = () => {
         if (mq.matches) {
             more.addEventListener('mouseenter', open);
-            more.addEventListener('mouseleave', () => close());
+            more.addEventListener('mouseleave', closeOnLeave);
         } else {
             more.removeEventListener('mouseenter', open);
-            more.removeEventListener('mouseleave', close);
+            more.removeEventListener('mouseleave', closeOnLeave);
             close();
         }
     };
@@ -302,10 +337,16 @@ function initNavDropdown() {
 
 // FAQ Accordion
 function initFAQ() {
-    document.querySelectorAll('.faq-item__question').forEach(question => {
+    document.querySelectorAll('.faq-item__question').forEach((question, index) => {
+        const item = question.parentNode;
+        const answer = item.querySelector('.faq-item__answer');
+        if (!answer) return;
+        const answerId = answer.id || `faq-answer-${index + 1}`;
+        answer.id = answerId;
+        question.setAttribute('aria-controls', answerId);
+        question.setAttribute('aria-expanded', 'false');
+
         question.addEventListener('click', () => {
-            const item = question.parentNode;
-            const answer = item.querySelector('.faq-item__answer');
             const isActive = item.classList.contains('active');
 
             // Закрываем все остальные элементы
@@ -315,6 +356,8 @@ function initFAQ() {
                     faqItem.classList.remove('active');
                     if (otherAnswer) {
                         otherAnswer.style.maxHeight = null;
+                        const otherQuestion = faqItem.querySelector('.faq-item__question');
+                        if (otherQuestion) otherQuestion.setAttribute('aria-expanded', 'false');
                     }
                 }
             });
@@ -324,9 +367,11 @@ function initFAQ() {
                 item.classList.add('active');
                 // add a little extra space at the bottom so content isn't too close
                 answer.style.maxHeight = (answer.scrollHeight + 16) + 'px';
+                question.setAttribute('aria-expanded', 'true');
             } else {
                 item.classList.remove('active');
                 answer.style.maxHeight = null;
+                question.setAttribute('aria-expanded', 'false');
             }
         });
     });
@@ -378,6 +423,9 @@ function initModal() {
     const openButtons = document.querySelectorAll('[data-modal-open]');
     const closeButton = modal ? modal.querySelector('.modal__close') : null;
     const overlay = modal ? modal.querySelector('.modal__overlay') : null;
+    const modalContent = modal ? modal.querySelector('.modal__content') : null;
+    const firstInput = modal ? modal.querySelector('input[name="name"]') : null;
+    let lastFocusedElement = null;
 
     if (!modal) return;
 
@@ -385,19 +433,34 @@ function initModal() {
     openButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            lastFocusedElement = document.activeElement;
             resetModalView(); // Сбрасываем вид модального окна при открытии
             modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
+            requestAnimationFrame(() => {
+                if (firstInput) firstInput.focus();
+                else if (closeButton) closeButton.focus();
+            });
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) return;
+                if (firstInput) firstInput.focus();
+                else if (closeButton) closeButton.focus();
+            }, 220);
         });
     });
 
     // Close modal
     const closeModal = () => {
         modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         // Небольшая задержка перед сбросом, чтобы анимация закрытия прошла
         setTimeout(() => {
             resetModalView();
+            if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                lastFocusedElement.focus();
+            }
         }, 300);
     };
 
@@ -427,6 +490,21 @@ function initModal() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
+        }
+
+        if (e.key === 'Tab' && modal.classList.contains('active') && modalContent) {
+            const focusable = Array.from(modalContent.querySelectorAll('button, input, a[href], [tabindex]:not([tabindex="-1"])'))
+                .filter(element => !element.disabled && element.offsetParent !== null);
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
     });
 }
@@ -481,14 +559,16 @@ function initPhoneMask() {
 // Form Validation
 function validateForm(formData) {
     const errors = {};
-    const name = formData.get('name').trim();
-    const phone = formData.get('phone').trim();
+    const name = String(formData.get('name') || '').trim();
+    const phone = String(formData.get('phone') || '').trim();
 
     // Валидация имени
     if (!name) {
         errors.name = 'Введите ваше имя';
     } else if (name.length < 2) {
         errors.name = 'Имя должно содержать минимум 2 символа';
+    } else if (!/^[\p{L}\p{M}][\p{L}\p{M}\s.'-]{1,99}$/u.test(name)) {
+        errors.name = 'Укажите имя без специальных символов';
     }
 
     // Валидация телефона
@@ -501,6 +581,10 @@ function validateForm(formData) {
         }
     }
 
+    if (formData.get('consent') !== 'on') {
+        errors.consent = 'Необходимо дать согласие';
+    }
+
     return errors;
 }
 
@@ -508,7 +592,10 @@ function showError(fieldId, message) {
     const input = document.getElementById(fieldId);
     const errorSpan = document.getElementById(fieldId.replace('modal-', '') + '-error');
 
-    if (input) input.classList.add('error');
+    if (input) {
+        input.classList.add('error');
+        input.setAttribute('aria-invalid', 'true');
+    }
     if (errorSpan) errorSpan.textContent = message;
 }
 
@@ -516,13 +603,18 @@ function clearError(fieldId) {
     const input = document.getElementById(fieldId);
     const errorSpan = document.getElementById(fieldId.replace('modal-', '') + '-error');
 
-    if (input) input.classList.remove('error');
+    if (input) {
+        input.classList.remove('error');
+        input.removeAttribute('aria-invalid');
+    }
     if (errorSpan) errorSpan.textContent = '';
 }
 
 function clearAllErrors() {
     clearError('modal-name');
     clearError('modal-phone');
+    const consentError = document.getElementById('consent-error');
+    if (consentError) consentError.textContent = '';
 }
 
 // Show/Hide Modal Messages
@@ -544,7 +636,11 @@ function showSuccessMessage() {
     if (errorMessage) errorMessage.style.display = 'none';
 
     // Показываем сообщение об успехе
-    if (successMessage) successMessage.style.display = 'block';
+    if (successMessage) {
+        successMessage.style.display = 'block';
+        successMessage.setAttribute('tabindex', '-1');
+        successMessage.focus();
+    }
 }
 
 function showErrorMessage(message) {
@@ -566,7 +662,11 @@ function showErrorMessage(message) {
     if (successMessage) successMessage.style.display = 'none';
 
     // Показываем сообщение об ошибке
-    if (errorMessage) errorMessage.style.display = 'block';
+    if (errorMessage) {
+        errorMessage.style.display = 'block';
+        errorMessage.setAttribute('tabindex', '-1');
+        errorMessage.focus();
+    }
     if (errorText) errorText.textContent = message;
 }
 
@@ -602,12 +702,19 @@ function initForms() {
     // Очистка ошибок при вводе
     const nameInput = document.getElementById('modal-name');
     const phoneInput = document.getElementById('modal-phone');
+    const consentInput = document.getElementById('modal-consent');
 
     if (nameInput) {
         nameInput.addEventListener('input', () => clearError('modal-name'));
     }
     if (phoneInput) {
         phoneInput.addEventListener('input', () => clearError('modal-phone'));
+    }
+    if (consentInput) {
+        consentInput.addEventListener('change', () => {
+            const consentError = document.getElementById('consent-error');
+            if (consentError) consentError.textContent = '';
+        });
     }
 
     enrollForm.addEventListener('submit', async function(e) {
@@ -629,6 +736,10 @@ function initForms() {
         if (Object.keys(errors).length > 0) {
             if (errors.name) showError('modal-name', errors.name);
             if (errors.phone) showError('modal-phone', errors.phone);
+            if (errors.consent) {
+                const consentError = document.getElementById('consent-error');
+                if (consentError) consentError.textContent = errors.consent;
+            }
             return;
         }
 
@@ -642,32 +753,20 @@ function initForms() {
         submitBtn.disabled = true;
 
         // Отправка данных через PHP API (безопасно!)
+        const controller = new AbortController();
+        const requestTimeout = setTimeout(() => controller.abort(), 15000);
+
         try {
             // Отправляем через PHP API
             // Токен скрыт на сервере!
-            let response = await fetch('/api/send-telegram', {
+            const response = await fetch('/api/send-lead', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams(formData)
+                body: new URLSearchParams(formData),
+                signal: controller.signal
             });
-
-            // Если 404, пробуем с .php
-            if (!response.ok && response.status === 404) {
-                response = await fetch('/api/send-telegram.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams(formData)
-                });
-            }
-
-            // Проверяем статус ответа
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
             // Проверяем Content-Type
             const contentType = response.headers.get('content-type');
@@ -680,31 +779,44 @@ function initForms() {
 
             const result = await response.json();
 
-            // Скрываем спиннер
-            btnText.style.display = 'inline-block';
-            btnSpinner.style.display = 'none';
-            submitBtn.disabled = false;
-
-            if (result.success) {
+            if (response.ok && result.success) {
                 // Показываем сообщение об успехе
                 showSuccessMessage();
                 this.reset();
                 clearAllErrors();
+                trackGoal('lead_submit_success');
             } else {
                 // Показываем сообщение об ошибке
                 showErrorMessage(result.message || 'Произошла ошибка. Пожалуйста, попробуйте позже или позвоните нам напрямую.');
             }
         } catch (error) {
             console.error('Ошибка отправки формы:', error);
-
-            // Скрываем спиннер
+            const message = error && error.name === 'AbortError'
+                ? 'Сервер отвечает слишком долго. Попробуйте ещё раз или позвоните нам по телефону 8-953-939-66-66.'
+                : 'Произошла ошибка при отправке заявки. Пожалуйста, позвоните нам напрямую по телефону 8-953-939-66-66.';
+            showErrorMessage(message);
+        } finally {
+            clearTimeout(requestTimeout);
             btnText.style.display = 'inline-block';
             btnSpinner.style.display = 'none';
             submitBtn.disabled = false;
-
-            // Показываем сообщение об ошибке
-            showErrorMessage('Произошла ошибка при отправке заявки. Пожалуйста, позвоните нам напрямую по телефону 8-953-939-66-66');
         }
+    });
+}
+
+function trackGoal(goal) {
+    if (typeof window.ym === 'function') {
+        window.ym(105185354, 'reachGoal', goal);
+    }
+}
+
+function initConversionTracking() {
+    document.addEventListener('click', (event) => {
+        const target = event.target.closest('a, button');
+        if (!target) return;
+        if (target.matches('[data-modal-open]')) trackGoal('lead_form_open');
+        else if (target.matches('a[href^="tel:"]')) trackGoal('phone_click');
+        else if (target.matches('a[href*="vk.com"]')) trackGoal('vk_click');
     });
 }
 
@@ -840,55 +952,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initForms();
     initSmoothScroll();
     initBackToTop();
+    initConversionTracking();
     initReviewsSlider(); // Инициализируем слайдер отзывов
     initGallerySlider(); // Инициализируем слайдер галереи
     initDocumentModal(); // Инициализируем модальное окно документов
     loadStartDate(); // Загружаем актуальную дату старта
 
-    // Средней важности - загружаем с небольшой задержкой на мобильных
-    // НО на мобильных initAnimations уже не нужна, т.к. элементы показываются сразу
-    if (!isMobile) {
-        // Ждем загрузки AOS если он еще не загружен
-        if (typeof AOS !== 'undefined') {
-            // AOS уже загружен, инициализируем сразу
-            setTimeout(initAnimations, 100);
-        } else if (window.AOS_LOADED) {
-            // AOS уже загружен (было установлено через событие)
-            setTimeout(initAnimations, 100);
-        } else {
-            // Ждем события загрузки AOS
-            window.addEventListener('aos-loaded', () => {
-                setTimeout(initAnimations, 100);
-            }, { once: true });
-            
-            // Fallback: если через 2 секунды AOS не загрузился
-            setTimeout(() => {
-                if (typeof AOS === 'undefined') {
-                    console.warn('AOS не загрузился, используем fallback');
-                    // Показываем все элементы если AOS не загрузился
-                    const allAosEls = document.querySelectorAll('[data-aos]');
-                    allAosEls.forEach(el => {
-                        el.classList.add('aos-animate');
-                        el.setAttribute('data-aos-animated', 'true');
-                        el.style.opacity = '1';
-                        el.style.visibility = 'visible';
-                    });
-                    enforceOnScrollAnimations();
-                } else {
-                    initAnimations();
-                }
-            }, 2000);
-        }
-    } else {
-        // На мобильных сразу показываем все элементы
-        const aosElements = document.querySelectorAll('[data-aos]');
-        aosElements.forEach(el => {
-            el.classList.add('aos-animate');
-            el.setAttribute('data-aos-animated', 'true');
-            el.style.opacity = '1';
-            el.style.transform = 'none';
-        });
-    }
+    initAnimations();
     
     // Clear any inline header styles
     const header = document.getElementById('header');
@@ -1356,14 +1426,17 @@ function initGallerySlider() {
 // Initialize Document Modal
 function initDocumentModal() {
     const modal = document.getElementById('documentModal');
+    if (!modal) return;
     const modalImage = modal.querySelector('.document-modal__image');
     const modalClose = modal.querySelector('.document-modal__close');
     const modalBackdrop = modal.querySelector('.document-modal__backdrop');
     const zoomButtons = document.querySelectorAll('.document-card__zoom');
+    let lastFocusedElement = null;
     
     if (!modal || !modalImage) return;
     
     function openModal(imageSrc, imageAlt) {
+        lastFocusedElement = document.activeElement;
         modalImage.src = imageSrc;
         modalImage.alt = imageAlt;
         modal.setAttribute('aria-hidden', 'false');
@@ -1371,6 +1444,7 @@ function initDocumentModal() {
         // Небольшая задержка для плавного появления
         setTimeout(() => {
             modal.classList.add('active');
+            if (modalClose) modalClose.focus();
         }, 10);
     }
     
@@ -1380,6 +1454,9 @@ function initDocumentModal() {
         // Убираем overflow после завершения анимации
         setTimeout(() => {
             document.body.style.overflow = '';
+            if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                lastFocusedElement.focus();
+            }
         }, 300);
     }
     
@@ -1424,6 +1501,12 @@ function initDocumentModal() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
+        }
+        if (e.key === 'Tab' && modal.classList.contains('active') && modalClose) {
+            if (e.shiftKey && document.activeElement === modalClose) {
+                e.preventDefault();
+                modalClose.focus();
+            }
         }
     });
 }

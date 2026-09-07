@@ -4,12 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-  <meta name="color-scheme" content="light dark" />
-
-  <!-- Отключение кеширования -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <meta name="color-scheme" content="light" />
   <!-- Оптимизация для мобильных -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -24,6 +19,7 @@
   <meta name="language" content="Russian" />
   <meta name="geo.region" content="RU-ARK" />
   <meta name="geo.placename" content="Архангельск" />
+  <link rel="canonical" href="https://mustang-29.ru/" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/logo1.png" />
@@ -37,7 +33,10 @@
   <meta property="og:title" content="Автошкола «Мустанг» — уверенное вождение с первого занятия" />
   <meta property="og:description"
     content="Автошкола Мустанг в Архангельске. Категория B, рассрочка 0%, современные авто, опытные инструкторы. 250+ выпускников, 92% сдают с первого раза." />
-  <meta property="og:image" content="https://mustang-29.ru/assets/og-image.jpg" />
+  <meta property="og:image" content="https://mustang-29.ru/assets/logo8.png" />
+  <meta property="og:image:width" content="1318" />
+  <meta property="og:image:height" content="445" />
+  <meta property="og:image:alt" content="Автошкола Мустанг в Архангельске" />
   <meta property="og:locale" content="ru_RU" />
   <meta property="og:site_name" content="Автошкола Мустанг" />
 
@@ -47,11 +46,11 @@
   <meta property="twitter:title" content="Автошкола «Мустанг» — уверенное вождение с первого занятия" />
   <meta property="twitter:description"
     content="Автошкола Мустанг в Архангельске. Категория B, рассрочка 0%, современные авто, опытные инструкторы. 250+ выпускников, 92% сдают с первого раза." />
-  <meta property="twitter:image" content="https://mustang-29.ru/assets/og-image.jpg" />
+  <meta property="twitter:image" content="https://mustang-29.ru/assets/logo8.png" />
 
   <!-- Preload critical resources -->
   <link rel="preload" href="assets/mustang.png" as="image" fetchpriority="high" />
-  <link rel="preload" href="styles/main.css?v=20250101" as="style" />
+  <link rel="preload" href="styles/main.css?v=20260820f" as="style" />
 
   <!-- Fonts - оптимизация для мобильных -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -72,16 +71,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   </noscript>
 
-  <!-- AOS - отложенная загрузка для мобильных -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
-  <noscript>
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-  </noscript>
-
   <!-- Styles - inline critical CSS for above-the-fold content -->
-  <link rel="stylesheet" href="styles/main.css?v=20250101" />
-  <link rel="stylesheet" href="styles/components.css?v=20260318" />
-  <link rel="stylesheet" href="styles/gallery.css?v=20250101" />
+  <link rel="stylesheet" href="styles/main.css?v=20260820f" />
+  <link rel="stylesheet" href="styles/components.css?v=20260820f" />
+  <link rel="stylesheet" href="styles/gallery.css?v=20260820f" />
+  <noscript>
+    <style>[data-aos] { opacity: 1 !important; visibility: visible !important; transform: none !important; }</style>
+  </noscript>
 
   <!-- Schema.org: DrivingSchool -->
   <script type="application/ld+json">
@@ -90,7 +86,7 @@
         "@type": "DrivingSchool",
         "name": "Автошкола «Мустанг»",
         "url": "https://mustang-29.ru/",
-        "image": "https://mustang-29.ru/assets/og-image.jpg",
+        "image": "https://mustang-29.ru/assets/logo8.png",
         "logo": "https://mustang-29.ru/assets/logo8.png",
         "telephone": "+7-953-939-66-66",
         "email": "mustang29info@yandex.com",
@@ -103,6 +99,12 @@
           "postalCode": "163000"
         },
         "openingHours": "Mo-Su 09:00-21:00",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 64.544693,
+          "longitude": 40.516373
+        },
+        "hasMap": "https://yandex.ru/maps/?text=Архангельск%2C%20проспект%20Троицкий%2067",
         "areaServed": "Архангельск",
         "sameAs": [
           "https://vk.com/amustang2021"
@@ -114,9 +116,11 @@
   <script>
     // Отложенная загрузка Яндекс карты только при необходимости
     function loadYandexMap() {
+      const apiKey = '';
+      if (!apiKey) return;
       if (typeof ymaps === 'undefined') {
         const script = document.createElement('script');
-        script.src = 'https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU';
+        script.src = 'https://api-maps.yandex.ru/2.1/?apikey=' + encodeURIComponent(apiKey) + '&lang=ru_RU';
         script.type = 'text/javascript';
         script.async = true;
         document.head.appendChild(script);
@@ -148,7 +152,7 @@
   </script>
 </head>
 
-<body>
+<body class="has-mobile-actions">
   <!-- Header -->
   <header class="header" id="header">
     <div class="container">
@@ -169,11 +173,12 @@
           <a href="#faq" class="nav__link nav__link--extra">FAQ</a>
           <a href="education-info.html" class="nav__link nav__link--extra">Сведения об образовательной организации</a>
           <!-- desktop dropdown "more" (hidden on mobile) -->
-          <div class="nav__more" aria-haspopup="true" aria-expanded="false">
-            <button class="nav__more-trigger" type="button" aria-label="Ещё разделы">
+          <div class="nav__more">
+            <button class="nav__more-trigger" type="button" aria-label="Ещё разделы" aria-haspopup="true"
+              aria-expanded="false" aria-controls="nav-more-menu">
               Ещё <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="nav__more-menu" role="menu">
+            <div class="nav__more-menu" id="nav-more-menu" role="menu">
               <a href="#process" class="nav__more-item" role="menuitem">Этапы обучения</a>
               <a href="#gallery" class="nav__more-item" role="menuitem">Галерея</a>
               <a href="#faq" class="nav__more-item" role="menuitem">FAQ</a>
@@ -194,7 +199,7 @@
               <span>пр. Троицкий, д. 67, оф. 413</span>
             </div>
           </div>
-          <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
+          <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-controls="nav" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
@@ -224,9 +229,9 @@
           </p>
 
           <div class="hero__actions">
-            <a href="#" class="btn btn--primary btn--large" data-modal-open>
+            <button type="button" class="btn btn--primary btn--large" data-modal-open>
               Записаться на обучение
-            </a>
+            </button>
             <a href="#about" class="btn btn--secondary btn--large">
               Узнать больше
             </a>
@@ -240,9 +245,9 @@
             <div class="start-banner__content">
               <div class="start-banner__text">
                 <div class="start-banner__title">Старт обучения</div>
-                <div class="start-banner__date">1 ноября</div>
+                <div class="start-banner__date">ОТКРЫТ</div>
               </div>
-              <a href="#" class="btn btn--primary btn--small" data-modal-open>Записаться сейчас</a>
+              <button type="button" class="btn btn--primary btn--small" data-modal-open>Записаться сейчас</button>
             </div>
           </div>
 
@@ -266,7 +271,7 @@
       <div class="about__main">
         <div class="about__visual" data-aos="fade-right">
           <div class="about__image-wrapper">
-            <img src="assets/about-main.jpg" alt="Учебный класс автошколы" class="about__image" width="600" height="400"
+            <img src="assets/about-main.webp" alt="Учебный класс автошколы" class="about__image" width="600" height="400"
               loading="lazy">
           </div>
         </div>
@@ -531,7 +536,7 @@
             <div class="fleet-card fleet-card--horizontal">
               <div class="fleet-card__badge">АКПП</div>
               <div class="fleet-card__image-large">
-                <img src="assets/HyundaiSolaris1.png" alt="Hyundai Solaris АКПП" width="400" height="280"
+                <img src="assets/HyundaiSolaris1.webp" alt="Hyundai Solaris АКПП" width="400" height="280"
                   loading="lazy" />
               </div>
               <div class="fleet-card__content">
@@ -547,7 +552,7 @@
             <div class="fleet-card fleet-card--horizontal">
               <div class="fleet-card__badge">АКПП</div>
               <div class="fleet-card__image-large">
-                <img src="assets/OmodaC5.png" alt="Omoda C5" width="400" height="280" loading="lazy" />
+                <img src="assets/OmodaC5.webp" alt="Omoda C5" width="400" height="280" loading="lazy" />
               </div>
               <div class="fleet-card__content">
                 <h4 class="fleet-card__title">Omoda C5</h4>
@@ -572,7 +577,7 @@
             <div class="fleet-card">
               <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
               <div class="fleet-card__image">
-                <img src="assets/RenaultDuster.png" alt="Renault Duster" width="400" height="280" loading="lazy" />
+                <img src="assets/RenaultDuster.webp" alt="Renault Duster" width="400" height="280" loading="lazy" />
               </div>
               <div class="fleet-card__content">
                 <h4 class="fleet-card__title">Renault Duster</h4>
@@ -587,7 +592,7 @@
             <div class="fleet-card">
               <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
               <div class="fleet-card__image">
-                <img src="assets/HyundaiSolaris.png" alt="Hyundai Solaris МКПП" width="400" height="280"
+                <img src="assets/HyundaiSolaris.webp" alt="Hyundai Solaris МКПП" width="400" height="280"
                   loading="lazy" />
               </div>
               <div class="fleet-card__content">
@@ -603,7 +608,7 @@
             <div class="fleet-card">
               <div class="fleet-card__badge fleet-card__badge--manual">МКПП</div>
               <div class="fleet-card__image">
-                <img src="assets/LadaGranta.png" alt="Lada Granta" width="400" height="280" loading="lazy" />
+                <img src="assets/LadaGranta.webp" alt="Lada Granta" width="400" height="280" loading="lazy" />
               </div>
               <div class="fleet-card__content">
                 <h4 class="fleet-card__title">Lada Granta</h4>
@@ -649,7 +654,7 @@
             </li>
           </ul>
           <div class="pricing-card__action">
-            <a href="#" class="btn btn--primary btn--block" data-modal-open>Записаться на теорию</a>
+            <button type="button" class="btn btn--primary btn--block" data-modal-open>Записаться на теорию</button>
           </div>
         </div>
 
@@ -678,7 +683,7 @@
             <li><i class="fas fa-check"></i> Гибкий график занятий</li>
           </ul>
           <div class="pricing-card__action">
-            <a href="#" class="btn btn--primary btn--block" data-modal-open>Записаться на вождение</a>
+            <button type="button" class="btn btn--primary btn--block" data-modal-open>Записаться на вождение</button>
           </div>
         </div>
       </div>
@@ -714,16 +719,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=47" alt="Анастасия" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">А</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Анастасия</div>
                     <div class="review-card__details">Выпускница 2024</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
 
@@ -744,16 +745,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=12" alt="Сергей" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">С</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Сергей</div>
                     <div class="review-card__details">Категория B</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
 
@@ -774,16 +771,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=33" alt="Максим" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">М</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Максим</div>
                     <div class="review-card__details">Выпускник 2023</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
 
@@ -805,16 +798,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=48" alt="Екатерина" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">Е</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Екатерина</div>
                     <div class="review-card__details">Выпускница 2024</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
 
@@ -836,16 +825,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=45" alt="Катерина" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">К</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Катерина</div>
                     <div class="review-card__details">Выпускница 2024</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
 
@@ -867,16 +852,12 @@
               </div>
               <div class="review-card__footer">
                 <div class="review-card__author">
-                  <img src="https://i.pravatar.cc/150?img=49" alt="Диана" class="review-card__avatar-img"
-                    loading="lazy" />
+                  <span class="review-card__avatar-fallback" aria-hidden="true">Д</span>
                   <div class="review-card__info">
                     <div class="review-card__name">Диана</div>
                     <div class="review-card__details">Выпускница 2023</div>
                   </div>
                 </div>
-                <a href="#" class="review-card__link" aria-label="Читать полностью">
-                  <i class="fas fa-arrow-right"></i>
-                </a>
               </div>
             </div>
           </div>
@@ -903,10 +884,10 @@
           <div class="cta-vk__icon"><i class="fas fa-calendar-alt"></i></div>
           <div class="cta-vk__text-wrapper">
             <h3 class="cta-vk__title">Старт обучения уже скоро</h3>
-            <p class="cta-vk__text">Ближайшая дата: <strong class="start-date-inline">1 ноября</strong></p>
+            <p class="cta-vk__text">Набор: <strong class="start-date-inline">ОТКРЫТ</strong></p>
           </div>
         </div>
-        <a href="#" class="btn btn--primary" data-modal-open>Записаться</a>
+        <button type="button" class="btn btn--primary" data-modal-open>Записаться</button>
       </div>
     </div>
   </section>
@@ -922,53 +903,53 @@
       <div class="gallery__slider-wrapper">
         <div class="gallery__slider" id="gallerySlider">
           <div class="gallery__track" id="galleryTrack">
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 1">
               <img src="assets/gallery/photo1.jpg"
                 alt="Ученики и инструкторы автошколы Мустанг около учебного автомобиля после экзамена в ГИБДД Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 2">
               <img src="assets/gallery/photo2.jpg"
                 alt="Фото учеников автошколы Мустанг с инструктором возле машины после успешной сдачи экзамена в Архангельске"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 3">
               <img src="assets/gallery/photo3.jpg"
                 alt="Выпускники и инструкторы автошколы Мустанг около учебного автомобиля после экзамена в ГИБДД Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 4">
               <img src="assets/gallery/photo4.jpg"
                 alt="Ученики автошколы Мустанг с инструктором возле машины после экзамена в ГИБДД Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 5">
               <img src="assets/gallery/photo5.jpg"
                 alt="Фото учеников и инструкторов автошколы Мустанг около учебного автомобиля после успешной сдачи экзамена Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 6">
               <img src="assets/gallery/photo6.jpg"
                 alt="Выпускники автошколы Мустанг с инструктором возле машины после экзамена в ГИБДД Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 7">
               <img src="assets/gallery/photo7.jpg"
                 alt="Ученики и инструкторы автошколы Мустанг около учебного автомобиля после экзамена в ГИБДД Архангельск"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
 
-            <div class="gallery-item">
+            <button type="button" class="gallery-item" aria-label="Открыть фото 8">
               <img src="assets/gallery/photo8.jpg"
                 alt="Фото выпускников автошколы Мустанг с инструктором возле машины после успешной сдачи экзамена в Архангельске"
-                class="gallery-item__image" width="400" height="300">
-            </div>
+                class="gallery-item__image" width="400" height="300" loading="lazy" decoding="async">
+            </button>
           </div>
         </div>
 
@@ -1092,13 +1073,13 @@
   </section>
 
   <!-- Document Modal -->
-  <div class="document-modal" id="documentModal" aria-hidden="true">
+  <div class="document-modal" id="documentModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Просмотр документа">
     <div class="document-modal__backdrop"></div>
     <div class="document-modal__container">
-      <button class="document-modal__close" aria-label="Закрыть">
+      <button class="document-modal__close" type="button" aria-label="Закрыть">
         <i class="fas fa-times"></i>
       </button>
-      <img class="document-modal__image" src="" alt="Документ">
+      <img class="document-modal__image" alt="Документ">
     </div>
   </div>
 
@@ -1289,6 +1270,10 @@
         <!-- Yandex Map -->
         <div class="contact__map" data-aos="fade-up" data-aos-delay="350">
           <div id="yandex-map" style="width: 100%; height: 100%; border-radius: var(--radius-lg); overflow: hidden;">
+            <div class="contact__map-fallback">
+              <p>Мы находимся в Архангельске, пр. Троицкий, д. 67, офис 413.</p>
+              <a href="https://yandex.ru/maps/?text=Архангельск%2C%20проспект%20Троицкий%2067" target="_blank" rel="noopener noreferrer">Открыть маршрут в Яндекс Картах</a>
+            </div>
           </div>
         </div>
       </div>
@@ -1348,13 +1333,25 @@
             <p>&copy; 2026 Автошкола «Мустанг». Все права защищены. Директор: Микуров Алексей Николаевич</p>
             <p>ОГРН 1152901012417, ИНН/КПП 2901263464/290101001</p>
           </div>
-          <div class="footer__legal-links">
-            <a href="privacy.html" class="footer__legal-link">Политика конфиденциальности</a>
-          </div>
+                  <div class="footer__legal-links">
+                    <a href="privacy.html" class="footer__legal-link">Политика конфиденциальности</a>
+                    <a href="offer.html" class="footer__legal-link">Договор-оферта</a>
+                  </div>
         </div>
       </div>
     </div>
   </footer>
+
+  <nav class="mobile-quick-actions" aria-label="Быстрые действия">
+    <a class="mobile-quick-actions__item mobile-quick-actions__item--phone" href="tel:+79539396666">
+      <i class="fas fa-phone" aria-hidden="true"></i>
+      <span>Позвонить</span>
+    </a>
+    <button class="mobile-quick-actions__item mobile-quick-actions__item--lead" type="button" data-modal-open>
+      <i class="fas fa-paper-plane" aria-hidden="true"></i>
+      <span>Записаться</span>
+    </button>
+  </nav>
 
   <!-- Back to Top Button -->
   <button class="back-to-top" id="backToTop" aria-label="Наверх">
@@ -1362,55 +1359,64 @@
   </button>
 
   <!-- Modal Form -->
-  <div class="modal" id="enrollModal">
+  <div class="modal" id="enrollModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="enrollModalTitle">
     <div class="modal__overlay"></div>
     <div class="modal__content">
-      <button class="modal__close" aria-label="Закрыть">
+      <button class="modal__close" type="button" aria-label="Закрыть">
         <i class="fas fa-times"></i>
       </button>
-      <h3 class="modal__title">Записаться на обучение</h3>
+      <h3 class="modal__title" id="enrollModalTitle">Записаться на обучение</h3>
       <p class="modal__subtitle">Оставьте свои контакты, и мы свяжемся с вами в ближайшее время</p>
 
       <!-- Success Message -->
-      <div class="modal__success" id="successMessage" style="display: none;">
+      <div class="modal__success" id="successMessage" role="status" aria-live="polite" style="display: none;">
         <div class="modal__success-icon">
           <i class="fas fa-check-circle"></i>
         </div>
         <h4 class="modal__success-title">Заявка отправлена!</h4>
         <p class="modal__success-text">Спасибо! Мы получили вашу заявку и свяжемся с вами в ближайшее время.</p>
-        <button class="btn btn--primary btn--large" id="closeSuccessBtn">
+        <button class="btn btn--primary btn--large" id="closeSuccessBtn" type="button">
           Отлично
         </button>
       </div>
 
       <!-- Error Message -->
-      <div class="modal__error" id="errorMessage" style="display: none;">
+      <div class="modal__error" id="errorMessage" role="alert" aria-live="assertive" style="display: none;">
         <div class="modal__error-icon">
           <i class="fas fa-exclamation-circle"></i>
         </div>
         <h4 class="modal__error-title">Ошибка отправки</h4>
         <p class="modal__error-text" id="errorText"></p>
-        <button class="btn btn--secondary btn--large" id="closeErrorBtn">
+        <button class="btn btn--secondary btn--large" id="closeErrorBtn" type="button">
           Попробовать снова
         </button>
       </div>
 
       <form class="modal__form" id="enrollForm" novalidate>
         <!-- Honeypot field (скрытое поле для защиты от ботов) -->
-        <input type="text" name="website" style="position: absolute; left: -5000px;" tabindex="-1" autocomplete="off" />
+        <input type="text" name="website" style="position: absolute; left: -5000px;" tabindex="-1" autocomplete="off"
+          aria-hidden="true" />
 
         <div class="form__group">
           <label for="modal-name" class="form__label">Ваше имя *</label>
-          <input type="text" id="modal-name" name="name" class="form__input" required minlength="2"
-            placeholder="Иван" />
-          <span class="form__error" id="name-error"></span>
+          <input type="text" id="modal-name" name="name" class="form__input" required minlength="2" maxlength="100" autocomplete="name"
+            placeholder="Иван" aria-describedby="name-error" />
+          <span class="form__error" id="name-error" role="alert"></span>
         </div>
 
         <div class="form__group">
           <label for="modal-phone" class="form__label">Телефон *</label>
-          <input type="tel" id="modal-phone" name="phone" class="form__input" required
-            placeholder="+7 (___) ___-__-__" />
-          <span class="form__error" id="phone-error"></span>
+          <input type="tel" id="modal-phone" name="phone" class="form__input" required maxlength="24" inputmode="tel" autocomplete="tel"
+            placeholder="+7 (___) ___-__-__" aria-describedby="phone-error" />
+          <span class="form__error" id="phone-error" role="alert"></span>
+        </div>
+
+        <div class="form__consent">
+          <label class="form__consent-label" for="modal-consent">
+            <input type="checkbox" id="modal-consent" name="consent" required aria-describedby="consent-error" />
+            <span>Соглашаюсь с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+          </label>
+          <span class="form__error" id="consent-error" role="alert"></span>
         </div>
 
         <button type="submit" class="btn btn--primary btn--large btn--block">
@@ -1436,108 +1442,8 @@
     </div>
   </div>
 
-  <!-- AOS - НЕ загружаем на мобильных для производительности -->
-  <script>
-    // Оптимизация: не загружаем AOS на мобильных вообще
-    const isMobile = window.innerWidth <= 768;
-
-    // Проверка слабого устройства
-    function isLowEndDevice() {
-      if ('connection' in navigator) {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        if (conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) {
-          return true;
-        }
-      }
-      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return true;
-      if (navigator.deviceMemory && navigator.deviceMemory <= 2) return true;
-      return false;
-    }
-
-    // На мобильных и слабых устройствах НЕ загружаем AOS вообще
-    if (!isMobile && !isLowEndDevice()) {
-      // Только на десктопах загружаем AOS
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/aos@next/dist/aos.js';
-      script.async = true;
-      // Ждем загрузки AOS перед инициализацией
-      script.onload = function () {
-        // Сигнализируем что AOS загружен
-        window.AOS_LOADED = true;
-        // Запускаем событие для app.js
-        window.dispatchEvent(new Event('aos-loaded'));
-      };
-      document.body.appendChild(script);
-    } else {
-      // На мобильных сразу добавляем класс aos-animate всем элементам
-      document.addEventListener('DOMContentLoaded', () => {
-        const els = document.querySelectorAll('[data-aos]');
-        els.forEach(el => {
-          el.classList.add('aos-animate');
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-        });
-        // Отключаем анимацию машины
-        const carImg = document.querySelector('.hero__image');
-        if (carImg) {
-          carImg.style.animation = 'none';
-          carImg.style.opacity = '1';
-          carImg.style.transform = 'none';
-        }
-      });
-    }
-  </script>
-  <script src="js/app.js?v=20250101" defer></script>
-  <script src="js/gallery.js?v=20250101" defer></script>
-
-  <!-- Schema.org structured data -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "AutomotiveBusiness",
-      "name": "Автошкола Мустанг",
-      "image": "https://mustang-29.ru/assets/logo.png",
-      "description": "Автошкола в Архангельске. Обучение вождению категории B на АКПП и МКПП. Современные автомобили, опытные инструкторы, рассрочка 0%.",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "пр. Троицкий, д. 67, оф. 413",
-        "addressLocality": "Архангельск",
-        "addressRegion": "Архангельская область",
-        "postalCode": "163000",
-        "addressCountry": "RU"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "64.544693",
-        "longitude": "40.516373"
-      },
-      "telephone": "+79539396666",
-      "email": "mustang29info@yandex.com",
-      "url": "https://mustang-29.ru",
-      "priceRange": "₽₽",
-  "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ],
-        "opens": "09:00",
-        "closes": "19:00"
-      },
-      "sameAs": [
-        "https://vk.com/amustang2021"
-      ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "reviewCount": "250"
-      }
-    }
-    </script>
+  <script src="js/app.js?v=20260820f" defer></script>
+  <script src="js/gallery.js?v=20260820f" defer></script>
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
