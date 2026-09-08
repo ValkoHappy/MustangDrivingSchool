@@ -845,50 +845,6 @@ function initSmoothScroll() {
     });
 }
 
-// Initialize Yandex Map
-function initYandexMap() {
-    if (typeof ymaps === 'undefined') {
-        console.warn('Yandex Maps API not loaded');
-        // Если карта не загружена, пробуем загрузить
-        if (typeof loadYandexMap === 'function') {
-            loadYandexMap();
-        }
-        return;
-    }
-
-    // Проверяем наличие контейнера
-    const mapContainer = document.getElementById('yandex-map');
-    if (!mapContainer) {
-        return;
-    }
-
-    ymaps.ready(function () {
-        try {
-            const coordinates = [64.544693, 40.516373];
-            const isMobile = window.innerWidth <= 768;
-
-            const map = new ymaps.Map('yandex-map', {
-                center: coordinates,
-                zoom: isMobile ? 15 : 16, // Меньший zoom для мобильных
-                controls: isMobile ? ['zoomControl'] : ['zoomControl', 'fullscreenControl'] // Меньше контролов на мобильных
-            });
-
-            // Добавляем метку
-            const placemark = new ymaps.Placemark(coordinates, {
-                balloonContent: '<strong>Автошкола «Мустанг»</strong><br>г. Архангельск, пр. Троицкий, д. 67, оф. 413<br>ТЦ «Пирамида», 4 этаж<br><a href="tel:+79539396666">8-953-939-66-66</a>',
-                hintContent: 'Автошкола «Мустанг» — ТЦ «Пирамида»'
-            }, {
-                preset: 'islands#blueDotIcon',
-                iconColor: '#02BBD0'
-            });
-
-            map.geoObjects.add(placemark);
-        } catch (error) {
-            console.error('Ошибка инициализации Яндекс карты:', error);
-        }
-    });
-}
-
 // Back to Top Button
 function initBackToTop() {
     const backToTopBtn = document.getElementById('backToTop');
@@ -969,18 +925,6 @@ document.addEventListener('DOMContentLoaded', function() {
         header.style.backdropFilter = '';
     }
     
-    // Тяжелые функции - загружаем когда нужно
-    // Яндекс карта загружается через функцию в HTML
-    // Статистика загружается при прокрутке (IntersectionObserver в initStats)
-    if (!isMobile) {
-        // На десктопе можно загрузить карту сразу если нужно
-        setTimeout(() => {
-            if (typeof ymaps !== 'undefined') {
-                initYandexMap();
-            }
-        }, 2000);
-    }
-    
     // Инициализация статистики будет происходить при скролле
     initStats();
 });
@@ -1016,23 +960,6 @@ function countUp(el, to, { duration = 1200, suffix = '', onProgress } = {}) {
 function initStats() {
     const section = document.getElementById('stats');
     if (!section) return;
-
-    // На мобильных отключаем анимацию счетчиков для производительности
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile) {
-        const cards = Array.from(section.querySelectorAll('.stat'));
-        cards.forEach((c) => {
-            const v = c.querySelector('.stat__value');
-            if (v) {
-                v.textContent = `${c.dataset.target}${c.dataset.suffix || ''}`;
-            }
-        });
-        const progress = section.querySelector('.stats__progress');
-        const fill = section.querySelector('.stats__progress-fill');
-        if (progress) progress.setAttribute('aria-valuenow', '100');
-        if (fill) fill.style.width = '100%';
-        return;
-    }
 
     const cards = Array.from(section.querySelectorAll('.stat'));
     const progress = section.querySelector('.stats__progress');

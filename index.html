@@ -70,7 +70,7 @@
 
   <!-- Styles - inline critical CSS for above-the-fold content -->
   <link rel="stylesheet" href="styles/main.css?v=20260908c" />
-  <link rel="stylesheet" href="styles/components.css?v=20260908c" />
+  <link rel="stylesheet" href="styles/components.css?v=20260908d" />
   <link rel="stylesheet" href="styles/gallery.css?v=20260908c" />
   <noscript>
     <style>[data-aos] { opacity: 1 !important; visibility: visible !important; transform: none !important; }</style>
@@ -109,44 +109,6 @@
       }
     </script>
 
-  <!-- Yandex Maps API - отложенная загрузка для мобильных -->
-  <script>
-    // Отложенная загрузка Яндекс карты только при необходимости
-    function loadYandexMap() {
-      const apiKey = '';
-      if (!apiKey) return;
-      if (typeof ymaps === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://api-maps.yandex.ru/2.1/?apikey=' + encodeURIComponent(apiKey) + '&lang=ru_RU';
-        script.type = 'text/javascript';
-        script.async = true;
-        document.head.appendChild(script);
-        script.onload = () => {
-          if (typeof initYandexMap === 'function') {
-            setTimeout(initYandexMap, 500);
-          }
-        };
-      }
-    }
-
-    // Загружаем карту только когда секция контактов близко к видимости
-    let mapLoaded = false;
-    function checkMapLoad() {
-      if (mapLoaded) return;
-      const contactSection = document.getElementById('contact');
-      if (contactSection) {
-        const rect = contactSection.getBoundingClientRect();
-        if (rect.top < window.innerHeight + 500) {
-          mapLoaded = true;
-          loadYandexMap();
-          window.removeEventListener('scroll', checkMapLoad);
-        }
-      }
-    }
-    window.addEventListener('scroll', checkMapLoad, { passive: true });
-    // Проверяем сразу при загрузке
-    setTimeout(checkMapLoad, 1000);
-  </script>
 </head>
 
 <body class="has-mobile-actions">
@@ -1264,14 +1226,18 @@
           </div>
         </div>
 
-        <!-- Yandex Map -->
+        <!-- Yandex Map: официальный виджет не требует API-ключа -->
         <div class="contact__map" data-aos="fade-up" data-aos-delay="350">
-          <div id="yandex-map" style="width: 100%; height: 100%; border-radius: var(--radius-lg); overflow: hidden;">
-            <div class="contact__map-fallback">
-              <p>Мы находимся в Архангельске, пр. Троицкий, д. 67, офис 413.</p>
-              <a href="https://yandex.ru/maps/?text=Архангельск%2C%20проспект%20Троицкий%2067" target="_blank" rel="noopener noreferrer">Открыть маршрут в Яндекс Картах</a>
-            </div>
-          </div>
+          <iframe
+            class="contact__map-frame"
+            src="https://yandex.ru/map-widget/v1/?ll=40.516373%2C64.544693&mode=whatshere&whatshere%5Bpoint%5D=40.516373%2C64.544693&whatshere%5Bzoom%5D=17&z=16"
+            title="Автошкола Мустанг на карте Яндекса"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen></iframe>
+          <a class="contact__map-link"
+            href="https://yandex.ru/maps/?text=Архангельск%2C%20проспект%20Троицкий%2067"
+            target="_blank" rel="noopener noreferrer">Открыть маршрут в Яндекс Картах</a>
         </div>
       </div>
     </div>
@@ -1440,7 +1406,7 @@
     </div>
   </div>
 
-  <script src="js/app.js?v=20260908c" defer></script>
+  <script src="js/app.js?v=20260908d" defer></script>
   <script src="js/gallery.js?v=20260908c" defer></script>
 
   <!-- Yandex.Metrika counter -->
