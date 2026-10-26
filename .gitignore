@@ -22,3 +22,18 @@ desktop.ini
 
 # Локальные архивы для загрузки на хостинг
 release/
+
+# Local development tools and browser sessions
+.claude/
+.codex/
+.codex-logs/
+.codex-temp/
+.playwright-mcp/
+.chrome-codex-profile/
+.serena/
+.codex-*.png
+
+# Local design experiments and research
+design/
+research/
+tmp/
